@@ -40,28 +40,40 @@
   .slot small{position:absolute;bottom:1px;right:5px;font-size:.6rem;color:var(--muted);font-family:var(--font-b)}
   .chips{display:flex;gap:6px;min-height:24px;flex-wrap:wrap;align-items:center;font-size:.72rem}
   .chip{font-weight:800;padding:3px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.06em;color:#1b1040}
-  .chip.shield{background:var(--gold)} .chip.glitch{background:var(--sky)} .chip.freeze{background:#bfe9ff} .chip.supply{background:var(--danger);color:#fff} .chip.level{background:#4b3f95;color:var(--ink)}
+  .chip.shield{background:var(--gold)} .chip.glitch{background:var(--sky)} .chip.freeze{background:#bfe9ff} .chip.supply{background:var(--danger);color:#fff} .chip.level{background:#4b3f95;color:var(--ink)} .chip.rush{background:#ff3b5c;color:#fff} .chip.shift{background:#c77dff;color:#1b1040}
   .hint{font-size:.72rem;color:var(--muted);text-align:center;line-height:1.5}
   .hint kbd{font-family:var(--font-b);background:#3a2d7a;border-radius:5px;padding:1px 5px;color:var(--ink);box-shadow:0 2px 0 #14102e}
   .overlay{position:absolute;inset:8px;background:rgba(18,11,48,.93);border-radius:14px;display:flex;flex-direction:column;
-    align-items:center;justify-content:flex-start;text-align:center;padding:18px;gap:10px;overflow:auto}
+    align-items:center;justify-content:flex-start;text-align:center;padding:16px;gap:10px;overflow:auto}
   .overlay > :first-child{margin-top:auto} .overlay > :last-child{margin-bottom:auto}
-  .overlay h1{font-family:var(--font-d);font-weight:700;font-size:2.4rem;margin:0;line-height:1;color:var(--gold);text-shadow:0 4px 0 #7a2a55;text-wrap:balance}
-  .overlay h2{font-family:var(--font-d);font-weight:700;font-size:1.5rem;margin:0;color:var(--ink);text-wrap:balance}
+  .overlay h1{font-family:var(--font-d);font-weight:700;font-size:2.2rem;margin:0;line-height:1;color:var(--gold);text-shadow:0 4px 0 #7a2a55;text-wrap:balance}
+  .overlay h2{font-family:var(--font-d);font-weight:700;font-size:1.4rem;margin:0;color:var(--ink);text-wrap:balance}
   .overlay p{margin:0}
-  .tag{font-size:.88rem;color:#e3dcff;max-width:42ch}
-  .levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%;max-width:400px}
-  .lvl{background:#2a1f63;border:3px solid #4b3f95;border-radius:14px;padding:8px 6px;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--font-b);box-shadow:0 4px 0 #14102e}
-  .lvl b{font-family:var(--font-d);font-size:1.3rem;line-height:1}
-  .lvl span{font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-  .lvl em{font-style:normal;font-size:.62rem;color:var(--gold)}
-  .lvl.done{border-color:var(--ok)} .lvl.next{border-color:var(--gold);background:#3a2d7a}
-  .lvl.locked{opacity:.45;cursor:not-allowed}
-  .lvl.endless{grid-column:1 / -1;flex-direction:row;justify-content:space-between;padding:10px 14px;border-color:#c77dff;background:linear-gradient(90deg,#3a2d7a,#4b2a7a)}
-  .lvl.endless b{font-size:1.15rem}
-  .lvl:active:not(.locked){transform:translateY(3px);box-shadow:0 1px 0 #14102e}
+  .tag{font-size:.86rem;color:#e3dcff;max-width:42ch}
+  .tierbar{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;max-width:420px}
+  .tierbar .nav{background:#2a1f63;border:2px solid #4b3f95;color:var(--ink);border-radius:10px;width:36px;height:36px;font-size:1.1rem;cursor:pointer;flex:none;font-family:var(--font-d)}
+  .tierbar .nav:disabled{opacity:.3;cursor:not-allowed}
+  .tierbar .nav:focus-visible{outline:3px solid var(--sky)}
+  .tiername{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+  .tiername b{font-family:var(--font-d);font-size:1.15rem;color:var(--gold)}
+  .tiername span{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+  .tierdesc{font-size:.78rem;color:#e3dcff;max-width:42ch;min-height:2.4em}
+  .levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;width:100%;max-width:420px}
+  .lvl{background:#2a1f63;border:2px solid #4b3f95;border-radius:10px;padding:6px 2px;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--font-b);box-shadow:0 3px 0 #14102e;min-width:0}
+  .lvl b{font-family:var(--font-d);font-size:1.05rem;line-height:1}
+  .lvl em{font-style:normal;font-size:.55rem;color:var(--gold);white-space:nowrap}
+  .lvl.done{border-color:var(--ok)} .lvl.done em{color:var(--ok)}
+  .lvl.next{border-color:var(--gold);background:#3a2d7a}
+  .lvl.locked{opacity:.4;cursor:not-allowed}
+  .lvl:active:not(.locked){transform:translateY(2px);box-shadow:0 1px 0 #14102e}
   .lvl:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
-  details{width:100%;max-width:400px;text-align:left}
+  .endless{width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:linear-gradient(90deg,#3a2d7a,#4b2a7a);border:2px solid #c77dff;border-radius:12px;padding:10px 14px;color:var(--ink);cursor:pointer;font-family:var(--font-b);box-shadow:0 3px 0 #14102e;text-align:left}
+  .endless b{font-family:var(--font-d);font-size:1.15rem}
+  .endless span{font-size:.72rem;color:var(--muted)}
+  .endless em{font-style:normal;color:var(--gold);font-size:.75rem;white-space:nowrap}
+  .endless:active{transform:translateY(2px);box-shadow:0 1px 0 #14102e}
+  .endless:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+  details{width:100%;max-width:420px;text-align:left}
   summary{cursor:pointer;font-weight:800;color:var(--gold);font-size:.85rem;list-style:none;text-align:center}
   summary::after{content:' ▾'}
   details[open] summary::after{content:' ▴'}
@@ -83,9 +95,11 @@
   .result span{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:3px}
   .cause{color:var(--danger);font-weight:800}
   .best{color:var(--ok);font-weight:800}
+  .newfeat{background:#3a2d7a;border:2px solid var(--gold);border-radius:12px;padding:8px 12px;font-size:.8rem;max-width:42ch}
+  .newfeat b{color:var(--gold)}
   .mute{position:absolute;top:14px;right:14px;background:#241a52;border:2px solid #4b3f95;color:var(--ink);border-radius:10px;padding:4px 8px;font-size:.75rem;cursor:pointer;font-family:var(--font-b);font-weight:800;z-index:2}
   @media (prefers-reduced-motion:reduce){ .meter i{transition:none} }
-  @media (max-width:420px){ .stats{gap:8px} .stat{min-width:40px} .brand{font-size:1.45rem} .overlay h1{font-size:2rem} }
+  @media (max-width:420px){ .stats{gap:8px} .stat{min-width:40px} .brand{font-size:1.45rem} .overlay h1{font-size:1.9rem} }
 </style>
 
 <div id="app">
@@ -143,25 +157,21 @@ const SWAP_SPEED = 9;          // cells per second
 const GRAV = 45;               // cells per second^2
 const SCORE = { perSecond: 10, dodge: 150, aiSwipe: 25, combo: 60, unlock: 40 };
 
-// Board masks: '#' open cell, '.' hole, 'L' caged gem (visible, matchable, cannot be swapped), 'H' fogged gem (hidden, cannot be matched or swapped).
-// A cage or fog breaks when any neighbouring cell is cleared, or on the level's unlock timer.
-const LEVELS = [
-  { id: 1, name: 'Warm-up', sub: 'Learn the dodge', cols: 7, rows: 7, colors: 4, aiMoves: 40, supply: 150, speed: 1.1, start: [4, 3] },
-  { id: 2, name: 'Sentience', sub: 'Five colors, faster hand', cols: 8, rows: 8, colors: 5, aiMoves: 60, supply: 220, speed: 1.4, start: [5, 3] },
-  { id: 3, name: 'The Pit', sub: 'Holes in the floor', cols: 8, rows: 8, colors: 5, aiMoves: 60, supply: 220, speed: 1.5, start: [5, 3],
-    mask: ['.######.', '########', '###..###', '###..###', '########', '########', '########', '.######.'] },
-  { id: 4, name: 'Cold Storage', sub: 'Caged zones open over time', cols: 9, rows: 8, colors: 5, aiMoves: 70, supply: 260, speed: 1.6, start: [5, 4], unlockEvery: 7,
-    spawn: { cross: .03 },
-    mask: ['LL#####LL', 'L#######L', 'L#######L', '#########', '#########', '#########', 'L#######L', 'LL#####LL'] },
-  { id: 5, name: 'Fog Bank', sub: 'Hidden gems, diagonal blasts', cols: 9, rows: 9, colors: 5, aiMoves: 75, supply: 280, speed: 1.75, start: [6, 4], unlockEvery: 9,
-    spawn: { diag: .035, cross: .02 },
-    mask: ['HHH###HHH', 'HH#####HH', 'H#######H', '#########', '#########', '#########', '#########', '##.###.##', '#########'] },
-  { id: 6, name: 'Seeker Swarm', sub: 'Seekers hunt you down', cols: 9, rows: 9, colors: 5, aiMoves: 80, supply: 300, speed: 1.9, start: [7, 4], unlockEvery: 10,
-    spawn: { seeker: .04, cross: .02, diag: .02 },
-    mask: ['#########', '#.#####.#', '#########', '###L.L###', '###...###', '###L.L###', '#########', '#.#####.#', '#########'] },
-  { id: 'endless', name: 'Endless', sub: 'Infinite gems and moves. Beat your best score.', cols: 8, rows: 8, colors: 5, infinite: true, speed: 1.3, start: [5, 3],
-    cageEvery: 22, spawn: { cross: .015, diag: .015, seeker: .01 } },
+// Campaign: 250 levels, one new mechanic every 25. Each tier keeps everything from the tiers before it.
+const LEVELS_PER_TIER = 25;
+const TIERS = [
+  { name: 'Basics',          desc: 'Just you, the hand and plain matches. Three in a row clears, nothing more.', adds: {} },
+  { name: 'Blasters',        desc: 'Four in a row makes a row or column blaster. Match it and it sweeps the whole line.', adds: { blasters: 1 } },
+  { name: 'Bombs & Holes',   desc: 'An L or T shape makes a bomb that clears 3x3. Boards start having holes.', adds: { bombs: 1, holes: 1 } },
+  { name: 'Color Bombs',     desc: 'Five in a row makes a color bomb. Swap it with any gem to wipe that color. Caged gems appear: matchable, not movable.', adds: { rainbow: 1, cages: 1 } },
+  { name: 'Fog & Combos',    desc: 'Fogged gems hide their color until something clears next to them. Six in a row makes a cross. Swapping two specials sets off a combo.', adds: { fog: 1, cross: 1, combos: 1 } },
+  { name: 'Diagonals',       desc: 'Diagonal blasters spawn from the supply. Locks also open on a timer.', adds: { diag: 1, timedUnlock: 1 } },
+  { name: 'Seekers',         desc: 'Seekers spawn from the supply. When one goes off it blasts wherever you are standing.', adds: { seeker: 1 } },
+  { name: 'Closing Cages',   desc: 'Cages close on random gems during play and the boards get bigger.', adds: { shifting: 1, big: 1 } },
+  { name: 'Shapeshift',      desc: 'Your color changes every 15 seconds. Watch the countdown over your head.', adds: { shapeshift: 1 } },
+  { name: 'Rush Hour',       desc: 'Every 20 seconds the hand goes into overdrive for five. Everything at once.', adds: { rush: 1 } },
 ];
+const TOTAL_LEVELS = TIERS.length * LEVELS_PER_TIER;
 
 // ============================================================
 // DATA
@@ -195,18 +205,101 @@ const SPECIAL_NAMES = { H: 'Row blaster', V: 'Column blaster', cross: 'Cross bla
 const OPEN = 0, HOLE = 1, CAGE = 2, FOG = 3;
 
 // ============================================================
+// LEVEL GENERATOR
+// ============================================================
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function tierOf(n) { return Math.min(TIERS.length - 1, Math.floor((n - 1) / LEVELS_PER_TIER)); }
+function featsForTier(t) { const f = {}; for (let i = 0; i <= t; i++) Object.assign(f, TIERS[i].adds); return f; }
+
+// Mask patterns. Each returns a function (r, c) -> true for cells it marks.
+const HOLE_PATTERNS = [
+  (R, C) => (r, c) => (r === 0 || r === R - 1) && (c === 0 || c === C - 1),
+  (R, C) => (r, c) => (r <= 1 && (c <= 1 || c >= C - 2)) && !(r === 1 && (c === 1 || c === C - 2)),
+  (R, C) => (r, c) => Math.abs(r - (R - 1) / 2) < 1 && Math.abs(c - (C - 1) / 2) < 1,
+  (R, C) => (r, c) => (r === Math.floor(R / 2) || r === Math.floor(R / 2) - 1) && (c === 1 || c === C - 2),
+  (R, C) => (r, c) => (r === Math.floor(R / 2)) && (c === 0 || c === C - 1),
+  (R, C) => (r, c) => (r === R - 1) && (c === 0 || c === C - 1 || Math.abs(c - (C - 1) / 2) < 1),
+  (R, C) => (r, c) => (r === 1 || r === R - 2) && (c === 1 || c === C - 2),
+];
+const CAGE_PATTERNS = [
+  (R, C) => (r, c) => (r === 0 || r === R - 1) && (c <= 1 || c >= C - 2),
+  (R, C) => (r, c) => (c === 0 || c === C - 1) && r >= 1 && r <= R - 2 && r % 2 === 1,
+  (R, C) => (r, c) => Math.abs(r - (R - 1) / 2) <= 1.5 && Math.abs(c - (C - 1) / 2) <= 1.5 && !(Math.abs(r - (R - 1) / 2) < 1 && Math.abs(c - (C - 1) / 2) < 1),
+  (R, C) => (r, c) => (r === 2 || r === R - 3) && (c === 2 || c === C - 3),
+  (R, C) => (r, c) => r === 0 && c % 2 === 0,
+  (R, C) => (r, c) => (r === 0 || r === R - 1) && Math.abs(c - (C - 1) / 2) < 1.5,
+];
+const FOG_PATTERNS = [
+  (R, C) => (r, c) => r + c <= 1 || r + (C - 1 - c) <= 1,
+  (R, C) => (r, c) => r + c <= 2 || r + (C - 1 - c) <= 2,
+  (R, C) => (r, c) => (c === 0 || c === C - 1) && r >= 2 && r <= R - 3,
+  (R, C) => (r, c) => r === R - 1 && (c <= 1 || c >= C - 2),
+  (R, C) => (r, c) => r === 0 && (c <= 2 || c >= C - 3),
+  (R, C) => (r, c) => (r === 1 || r === R - 2) && Math.abs(c - (C - 1) / 2) < 1.5,
+];
+
+function makeLevel(n) {
+  const t = tierOf(n), k = (n - 1) % LEVELS_PER_TIER, p = k / (LEVELS_PER_TIER - 1), g = (n - 1) / (TOTAL_LEVELS - 1);
+  const rng = mulberry32(n * 7919 + 13);
+  const F = featsForTier(t);
+  let cols = 8, rows = 8;
+  if (t === 0) { cols = rows = k < 10 ? 7 : 8; }
+  else if (t <= 2) { cols = rng() < .3 ? 9 : 8; rows = 8; }
+  else if (t <= 6) { const pickB = rng(); cols = pickB < .4 ? 8 : 9; rows = pickB > .75 ? 9 : 8; }
+  else { const pickB = rng(); cols = pickB < .5 ? 9 : 10; rows = 9; }
+  const colors = n <= 8 ? 4 : 5;
+  const speed = +(0.95 + g * 1.35 + p * 0.15).toFixed(2);
+  const aiMoves = Math.round(36 + g * 74 + p * 8);
+  const supply = Math.round(aiMoves * (3.3 + 3 * g)); // later tiers chain specials, so they need a deeper supply
+  const spawn = {};
+  if (F.cross) spawn.cross = .012 + .012 * g;
+  if (F.diag) spawn.diag = .02 + .02 * (t === 5 ? p : 1);
+  if (F.seeker) spawn.seeker = .02 + .025 * (t === 6 ? p : 1);
+  // mask
+  const mask = [];
+  const marks = [];
+  const addPattern = (lib, kind, count) => { const idxs = []; while (idxs.length < count) { const i = Math.floor(rng() * lib.length); if (!idxs.includes(i)) idxs.push(i); } for (const i of idxs) marks.push({ kind, f: lib[i](rows, cols) }); };
+  if (F.holes) addPattern(HOLE_PATTERNS, '.', t === 2 ? (p < .4 ? 1 : 1 + (rng() < .5 ? 1 : 0)) : 1 + (rng() < .45 ? 1 : 0));
+  if (F.cages) addPattern(CAGE_PATTERNS, 'L', t === 3 ? (p < .5 ? 1 : 2) : 1 + (rng() < .4 ? 1 : 0));
+  if (F.fog) addPattern(FOG_PATTERNS, 'H', t === 4 ? (p < .5 ? 1 : 2) : 1);
+  // the very first few levels of a tier go lighter on its new hazard
+  const light = k < 3;
+  for (let r = 0; r < rows; r++) {
+    let row = '';
+    for (let c = 0; c < cols; c++) {
+      let ch = '#';
+      for (const m of marks) { if (m.f(r, c)) { if (light && ch === '#' && (r + c) % 2) continue; ch = m.kind; } }
+      row += ch;
+    }
+    mask.push(row);
+  }
+  // start cell: lowest open cell nearest the middle
+  let start = null;
+  for (let r = rows - 2; r >= 0 && !start; r--) for (let d = 0; d < cols && !start; d++) { for (const c of [Math.floor((cols - 1) / 2) + d, Math.floor((cols - 1) / 2) - d]) { if (c >= 0 && c < cols && mask[r][c] === '#') { start = [r, c]; break; } } }
+  if (!start) start = [rows - 1, 0];
+  const L = { id: n, name: 'Level ' + n, tier: t, tierName: TIERS[t].name, cols, rows, colors, aiMoves, supply, speed, start, mask, spawn, feats: F };
+  if (F.timedUnlock) L.unlockEvery = Math.round(12 - 5 * g);
+  if (F.shifting) L.cageEvery = Math.round(26 - 8 * p);
+  if (F.shapeshift) L.shiftEvery = 15;
+  if (F.rush) { L.rushEvery = 20; L.rushLen = 5; }
+  return L;
+}
+const ENDLESS = { id: 'endless', name: 'Endless', tierName: 'Endless', sub: 'Infinite gems and moves. Beat your best score.', cols: 8, rows: 8, colors: 5, infinite: true, speed: 1.3, start: [5, 3],
+  cageEvery: 22, rushEvery: 30, rushLen: 5, spawn: { cross: .015, diag: .015, seeker: .01 }, feats: featsForTier(TIERS.length - 1) };
+
+// ============================================================
 // STATE
 // ============================================================
 let COLS = 8, ROWS = 8, NCOL = 5;
 let last = 0;
 const S = {
-  level: LEVELS[0], levelIdx: 0, gen: 0,
+  level: null, levelNum: 1, gen: 0,
   grid: [], cells: [], supply: 0, busy: false, dead: false, won: false, running: false, paused: false, muted: false,
   time: 0, score: 0, scoreAcc: 0, aiMoves: 0, aiLeft: 0, dodges: 0, cleared: 0, playerCd: 0, queued: null, lastDir: { dx: 0, dy: 0 }, winReason: '',
   ai: { state: 'idle', think: 2, tele: 0, plan: null, preview: null, interval: 1, teleTime: .5, wasLethal: false, aggression: .6 },
   finger: { active: false, vis: 0, x: 0, y: 0, tx: 0, ty: 0 },
-  shield: 0, glitch: 0, freeze: 0, meter: 0, slots: [], unlockT: 0, cageT: 0,
-  popping: [], particles: [], floats: [], cause: '', causeWho: '', blink: 0, blinkT: 2, supplyWarned: false, shake: 0,
+  shield: 0, glitch: 0, freeze: 0, meter: 0, slots: [], unlockT: 0, cageT: 0, shiftT: 0, shiftWarned: false, rushT: 0, rush: 0,
+  popping: [], particles: [], floats: [], fx: [], cause: '', causeWho: '', blink: 0, blinkT: 2, supplyWarned: false, shake: 0,
 };
 let nextId = 1;
 const rnd = (n) => Math.floor(Math.random() * n);
@@ -217,10 +310,12 @@ const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 const inb = (r, c) => r >= 0 && r < ROWS && c >= 0 && c < COLS;
 const isOpen = (r, c) => inb(r, c) && S.cells[r][c] === OPEN;
 const isLocked = (r, c) => inb(r, c) && (S.cells[r][c] === CAGE || S.cells[r][c] === FOG);
+const feat = (f) => !!(S.level && S.level.feats && S.level.feats[f]);
 
 function loadJSON(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
 function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
-let progress = loadJSON('lastmatch.progress', { beaten: 0, best: {}, bestEndless: 0 });
+let progress = loadJSON('lastmatch.campaign', { beaten: 0, best: {}, bestEndless: 0 });
+if (!progress.best) progress.best = {};
 
 function makeGem(color, special = null) {
   return { id: nextId++, color, special, player: false, rx: 0, ry: 0, vy: 0, born: 0, squash: 0, pop: -1, wob: Math.random() * 6.28 };
@@ -255,6 +350,7 @@ function tone(f, dur, type = 'square', vol = .06, slide = 0, delay = 0) {
 const SFX = {
   swap: () => tone(300, .08, 'triangle', .05, 160),
   pop: (n) => tone(420 + n * 90, .16, 'square', .045, 220),
+  blast: () => { tone(200, .25, 'sawtooth', .07, 500); tone(90, .3, 'square', .05, -40, .02); },
   miss: () => tone(170, .25, 'sawtooth', .05, -90),
   glitch: () => { tone(900, .05, 'square', .04, -600); tone(500, .08, 'sawtooth', .04, 400, .06); },
   death: () => { tone(320, .55, 'sawtooth', .08, -280); tone(200, .7, 'square', .05, -150, .1); },
@@ -266,6 +362,10 @@ const SFX = {
   unlock: () => { tone(880, .08, 'triangle', .05); tone(1320, .14, 'triangle', .05, 0, .07); },
   cage: () => { tone(220, .12, 'square', .05, -60); tone(160, .2, 'square', .04, -40, .1); },
   bump: () => tone(120, .07, 'square', .04, -30),
+  made: () => { tone(660, .07, 'triangle', .04, 300); tone(990, .12, 'triangle', .04, 200, .06); },
+  shift: () => { tone(500, .1, 'sine', .05, 400); tone(900, .2, 'sine', .05, -300, .1); },
+  tick: () => tone(1000, .05, 'square', .035),
+  rush: () => { tone(300, .1, 'sawtooth', .06, 300); tone(600, .25, 'sawtooth', .06, 300, .1); },
 };
 
 // ============================================================
@@ -363,7 +463,6 @@ function effectCells(grid, r, c, special, pl) {
   return out;
 }
 
-// Expands matched runs + seeds into a Map of cellKey -> cause. Fog cells are never cleared (they get revealed instead).
 function expandClear(grid, runs, seeds) {
   const clear = new Map(); const q = []; const pl = findPlayerIn(grid);
   const add = (r, c, cause) => {
@@ -382,7 +481,6 @@ function expandClear(grid, runs, seeds) {
 }
 function findPlayerIn(grid) { for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) { const g = grid[r][c]; if (g && g.player) return { r, c, g }; } return null; }
 
-// Locks that break because a neighbour (or the cell itself) was cleared.
 function collectUnlocks(clear) {
   const out = new Set();
   for (const [k] of clear) {
@@ -397,7 +495,7 @@ function unlockCell(r, c, announce) {
   if (announce) { floatText(c + .5, r, 'Unlocked!', '#4ee089'); SFX.unlock(); S.score += SCORE.unlock; }
 }
 
-// What a swap of two gems does. Returns {seeds} for special activations, or null to use normal match rules.
+// What a swap of two gems does. Returns seeds for special activations, or null to use normal match rules.
 function swapSeeds(grid, A, B) {
   const gA = grid[A.r][A.c], gB = grid[B.r][B.c];
   if (!gA || !gB) return null;
@@ -411,7 +509,7 @@ function swapSeeds(grid, A, B) {
     for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) { const g = grid[r][c]; if (g && g.color === O.color) push(r, c, 'rainbow'); }
     return seeds;
   }
-  if (!sA || !sB) return null;
+  if (!sA || !sB || !feat('combos')) return null;
   const lines = new Set(['H', 'V', 'cross', 'diag']);
   const bombs = new Set(['bomb', 'mega']);
   if (lines.has(sA) && lines.has(sB)) {
@@ -424,23 +522,29 @@ function swapSeeds(grid, A, B) {
     push(A.r, A.c, 'combo'); return seeds;
   }
   if (bombs.has(sA) && bombs.has(sB)) { for (const [r, c] of effectCells(grid, B.r, B.c, 'mega', null)) push(r, c, 'combo'); push(A.r, A.c, 'combo'); return seeds; }
-  // anything else (seeker involved): both go off where they land
   push(A.r, A.c, 'combo'); push(B.r, B.c, 'combo'); return seeds;
 }
 
 function planSpecials(runs, pivotKeys, protectedKey) {
-  const created = [], consumed = new Set(), inH = new Map(), inV = new Map();
-  for (const run of runs) { const m = run.dir === 'H' ? inH : inV; for (const cell of run.cells) m.set(key(cell.r, cell.c), run); }
-  for (const [k, runH] of inH) {
-    const runV = inV.get(k); if (!runV || consumed.has(runH) || consumed.has(runV)) continue;
-    consumed.add(runH); consumed.add(runV);
-    if (k === protectedKey) continue;
-    created.push({ k, special: 'bomb', color: runH.color });
+  const created = [], consumed = new Set();
+  if (feat('bombs')) {
+    const inH = new Map(), inV = new Map();
+    for (const run of runs) { const m = run.dir === 'H' ? inH : inV; for (const cell of run.cells) m.set(key(cell.r, cell.c), run); }
+    for (const [k, runH] of inH) {
+      const runV = inV.get(k); if (!runV || consumed.has(runH) || consumed.has(runV)) continue;
+      consumed.add(runH); consumed.add(runV);
+      if (k === protectedKey) continue;
+      created.push({ k, special: 'bomb', color: runH.color });
+    }
   }
   for (const run of runs) {
     if (consumed.has(run) || run.cells.length < 4) continue;
     const n = run.cells.length;
-    const special = n >= 6 ? 'cross' : n === 5 ? 'rainbow' : (run.dir === 'H' ? 'V' : 'H');
+    let special = null;
+    if (n >= 6 && feat('cross')) special = 'cross';
+    else if (n >= 5 && feat('rainbow')) special = 'rainbow';
+    else if (feat('blasters')) special = run.dir === 'H' ? 'V' : 'H';
+    if (!special) continue;
     const keys = run.cells.map((c) => key(c.r, c.c)).filter((k) => k !== protectedKey);
     if (!keys.length) continue;
     let k = keys.find((x) => pivotKeys.includes(x));
@@ -450,7 +554,6 @@ function planSpecials(runs, pivotKeys, protectedKey) {
   return created;
 }
 
-// Evaluates a swap without side effects. Returns null when the swap does nothing.
 function evalSwap(r1, c1, r2, c2) {
   if (!isOpen(r1, c1) || !isOpen(r2, c2)) return null;
   const grid = S.grid, a = grid[r1][c1], b = grid[r2][c2];
@@ -501,7 +604,6 @@ function allSettled() {
 }
 async function settle() { let guard = 0; while (!allSettled() && guard < 250) { if (!S.paused) guard++; await sleep(16); } }
 
-// Gravity runs inside each column segment of open cells. Holes and locks are floors and ceilings.
 function applyGravity() {
   let moved = false;
   const infinite = S.level.infinite;
@@ -534,18 +636,33 @@ function spawnParticles(c, r, g) {
 }
 function floatText(x, y, text, color = '#ffd23f', big = false) { S.floats.push({ x, y, text, color, t: 0, big }); }
 
+// Visual feedback when a special goes off: beams along lines, rings for bombs, a streak for seekers, a flash for color bombs.
+function specialFx(r, c, g) {
+  const col = g.color >= 0 ? GEMS[g.color].c : '#ffffff';
+  const sp = g.special;
+  const beam = (r1, c1, r2, c2) => S.fx.push({ kind: 'beam', x1: c1 + .5, y1: r1 + .5, x2: c2 + .5, y2: r2 + .5, color: col, t: 0, dur: .4 });
+  const ring = (rr, cc, rad) => S.fx.push({ kind: 'ring', x: cc + .5, y: rr + .5, r0: .3, r1: rad, color: col, t: 0, dur: .45 });
+  if (sp === 'H' || sp === 'cross') beam(r, -1, r, COLS);
+  if (sp === 'V' || sp === 'cross') beam(-1, c, ROWS, c);
+  if (sp === 'diag') { const n = Math.max(ROWS, COLS); beam(r - n, c - n, r + n, c + n); beam(r - n, c + n, r + n, c - n); }
+  if (sp === 'bomb') ring(r, c, 1.9);
+  if (sp === 'mega') { ring(r, c, 2.9); ring(r, c, 1.6); }
+  if (sp === 'seeker') { const pl = findPlayer(); if (pl) { beam(r, c, pl.r, pl.c); ring(pl.r, pl.c, 1.9); } else ring(r, c, 1); }
+  if (sp === 'rainbow') S.fx.push({ kind: 'flash', color: col, t: 0, dur: .35 });
+}
+
 async function popCells(clear, combo) {
   if (!clear.size) return;
   let hitSpecial = false;
   for (const [k] of clear) {
     const r = Math.floor(k / COLS), c = k % COLS; const g = S.grid[r][c]; if (!g) continue;
-    if (g.special) hitSpecial = true;
+    if (g.special) { hitSpecial = true; specialFx(r, c, g); }
     S.grid[r][c] = null; g.pop = 0; S.popping.push(g); spawnParticles(c, r, g);
     if (S.cells[r][c] === CAGE) S.cells[r][c] = OPEN;
   }
   S.cleared += clear.size;
   SFX.pop(Math.min(combo, 6));
-  if (hitSpecial) S.shake = .35;
+  if (hitSpecial) { S.shake = .4; SFX.blast(); }
   await sleep(POP_MS);
 }
 
@@ -583,6 +700,8 @@ async function resolveBoard(pivotKeys, seeds, who) {
       const r = Math.floor(cr.k / COLS), c = cr.k % COLS;
       if (S.grid[r][c]) continue;
       const g = makeGem(cr.color, cr.special); g.rx = c; g.ry = r; g.born = 1; S.grid[r][c] = g;
+      S.fx.push({ kind: 'ring', x: c + .5, y: r + .5, r0: .2, r1: 1.1, color: '#ffffff', t: 0, dur: .4 });
+      floatText(c + .5, r - .2, SPECIAL_NAMES[cr.special] + '!', '#ffffff'); SFX.made();
     }
     if (S.dead) return;
     applyGravity(); await settle();
@@ -591,7 +710,6 @@ async function resolveBoard(pivotKeys, seeds, who) {
   }
 }
 
-// Returns false when the swap fizzled (AI only)
 async function doSwap(A, B, who) {
   const gen = S.gen;
   swapCells(A, B); await settle(); if (gen !== S.gen) return false;
@@ -620,6 +738,7 @@ function afterResolve() {
 function paceMultiplier() {
   let m = AI_SPEED * (S.level.speed || 1);
   if (S.level.infinite) m *= 1 + Math.min(1.6, S.time / 120);
+  if (S.rush > 0) m *= 2;
   return m;
 }
 function updateAI(dt) {
@@ -654,6 +773,7 @@ async function aiExecute() {
     if (S.glitch > 0) SFX.glitch(); else SFX.swap();
     if (isOpen(p.r1, p.c1) && isOpen(p.r2, p.c2)) { swapCells(P1, P2); await settle(); await sleep(70); swapCells(P1, P2); await settle(); }
     else await sleep(160);
+    if (gen !== S.gen) return;
     if (S.glitch > 0) floatText(p.c2 + .5, p.r2, 'GLITCHED', '#41b6ff'); else floatText(p.c2 + .5, p.r2, 'Missed!', '#ffffff');
     if (A.wasLethal) { S.dodges++; S.score += SCORE.dodge; }
     SFX.miss();
@@ -717,7 +837,6 @@ function shuffleBoard() {
   settle().then(() => { if (gen !== S.gen) return; S.busy = false; afterResolve(); });
 }
 
-// Endless mode: a cage closes on a random gem now and then.
 function spawnCage() {
   const cand = [];
   let caged = 0, open = 0;
@@ -735,21 +854,37 @@ function timedUnlock() {
   if (!locked.length) return;
   const cell = pick(locked); unlockCell(cell.r, cell.c, true);
 }
+// Shapeshift: pick a new color for the player that does not instantly match. Returns false if none is safe right now.
+function shapeshift() {
+  const pl = findPlayer(); if (!pl) return true;
+  const cur = pl.g.color, order = [];
+  for (let i = 0; i < NCOL; i++) if (i !== cur) order.push(i);
+  for (let i = order.length - 1; i > 0; i--) { const j = rnd(i + 1); [order[i], order[j]] = [order[j], order[i]]; }
+  for (const col of order) {
+    pl.g.color = col;
+    const bad = findMatches(S.grid).some((run) => run.cells.some((x) => x.r === pl.r && x.c === pl.c));
+    if (!bad) { pl.g.born = .7; floatText(pl.c + .5, pl.r, 'Shapeshift!', '#c77dff'); SFX.shift(); S.fx.push({ kind: 'ring', x: pl.c + .5, y: pl.r + .5, r0: .2, r1: 1.3, color: '#c77dff', t: 0, dur: .5 }); return true; }
+  }
+  pl.g.color = cur; return false;
+}
 
 // ============================================================
 // GAME FLOW
 // ============================================================
-function startLevel(idx) {
+function startLevel(which) {
   audio();
-  S.gen++; S.levelIdx = idx; S.level = LEVELS[idx];
+  S.gen++;
+  if (which === 'endless') { S.level = ENDLESS; S.levelNum = 'endless'; }
+  else { S.levelNum = which; S.level = makeLevel(which); }
   const L = S.level;
   Object.assign(S, { supply: L.infinite ? Infinity : L.supply, aiLeft: L.infinite ? Infinity : L.aiMoves, busy: false, dead: false, won: false, running: true, paused: false,
     time: 0, score: 0, scoreAcc: 0, aiMoves: 0, dodges: 0, cleared: 0, playerCd: 0, queued: null, shield: 0, glitch: 0, freeze: 0, meter: 0, slots: [],
-    unlockT: L.unlockEvery || 0, cageT: L.cageEvery || 0, popping: [], particles: [], floats: [], cause: '', winReason: '', supplyWarned: false, shake: 0 });
+    unlockT: L.unlockEvery || 0, cageT: L.cageEvery || 0, shiftT: L.shiftEvery || 0, shiftWarned: false, rushT: L.rushEvery || 0, rush: 0,
+    popping: [], particles: [], floats: [], fx: [], cause: '', winReason: '', supplyWarned: false, shake: 0 });
   Object.assign(S.ai, { state: 'idle', think: AI_PACE.firstMove / paceMultiplier(), plan: null, preview: null, wasLethal: false });
   S.finger.active = false; S.finger.vis = 0;
   newBoard(); resize(); renderSlots();
-  document.getElementById('lvl-name').textContent = (L.infinite ? '' : 'Level ' + L.id + ' · ') + L.name;
+  $('lvl-name').textContent = L.infinite ? 'Endless' : 'Level ' + L.id + ' · ' + L.tierName;
   hideOverlay();
   const gen = S.gen; S.busy = true; settle().then(() => { if (gen === S.gen) S.busy = false; });
 }
@@ -759,10 +894,10 @@ function endGame(win) {
   const L = S.level; let newBest = false;
   if (L.infinite) { if (S.score > (progress.bestEndless || 0)) { progress.bestEndless = S.score; newBest = true; } }
   else {
-    if (win && S.levelIdx + 1 > progress.beaten) progress.beaten = S.levelIdx + 1;
+    if (win && L.id > progress.beaten) progress.beaten = L.id;
     if (win && S.score > (progress.best[L.id] || 0)) { progress.best[L.id] = S.score; newBest = true; }
   }
-  saveJSON('lastmatch.progress', progress);
+  saveJSON('lastmatch.campaign', progress);
   if (win) { SFX.win(); const pl = findPlayer(); if (pl) floatText(pl.c + .5, pl.r, 'AI is stuck!', '#4ee089', true); }
   setTimeout(() => showOverlay(win ? 'win' : 'lose', newBest), win ? 900 : 1100);
 }
@@ -809,7 +944,7 @@ function fmtTime(t) { const m = Math.floor(t / 60), s = Math.floor(t % 60); retu
 const fmtNum = (n) => isFinite(n) ? String(n) : '∞';
 let lastHud = '';
 function updateHud() {
-  const sig = [Math.floor(S.time), S.supply, S.aiLeft, S.dodges, Math.round(S.meter * 100), Math.ceil(S.shield), Math.ceil(S.glitch), Math.ceil(S.freeze), S.score, S.running].join('|');
+  const sig = [Math.floor(S.time), S.supply, S.aiLeft, S.dodges, Math.round(S.meter * 100), Math.ceil(S.shield), Math.ceil(S.glitch), Math.ceil(S.freeze), S.score, S.running, Math.ceil(S.rush), Math.ceil(S.shiftT)].join('|');
   if (sig === lastHud) return; lastHud = sig;
   $('st-time').textContent = fmtTime(S.time); $('st-score').textContent = S.score; $('st-dodges').textContent = S.dodges;
   $('st-supply').textContent = fmtNum(S.supply); $('st-moves').textContent = fmtNum(S.aiLeft);
@@ -820,23 +955,28 @@ function updateHud() {
   if (S.shield > 0) chips += '<span class="chip shield">Shield ' + Math.ceil(S.shield) + 's</span>';
   if (S.glitch > 0) chips += '<span class="chip glitch">Glitch ' + Math.ceil(S.glitch) + 's</span>';
   if (S.freeze > 0) chips += '<span class="chip freeze">Freeze ' + Math.ceil(S.freeze) + 's</span>';
+  if (S.rush > 0) chips += '<span class="chip rush">Rush ' + Math.ceil(S.rush) + 's</span>';
+  if (S.running && S.level.shiftEvery) chips += '<span class="chip shift">Shift in ' + Math.ceil(S.shiftT) + 's</span>';
   if (S.supply === 0 && S.running) chips += '<span class="chip supply">Supply empty · board draining</span>';
-  if (S.level.infinite && S.running) chips += '<span class="chip level">Best ' + (progress.bestEndless || 0) + '</span>';
+  if (S.level && S.level.infinite && S.running) chips += '<span class="chip level">Best ' + (progress.bestEndless || 0) + '</span>';
   $('chips').innerHTML = chips;
 }
 
-function levelButtons() {
-  let html = '<div class="levels">';
-  LEVELS.forEach((L, i) => {
-    if (L.infinite) {
-      html += '<button class="lvl endless" type="button" data-i="' + i + '"><span style="text-align:left"><b>' + L.name + '</b><br>' + L.sub + '</span><em>Best ' + (progress.bestEndless || 0) + '</em></button>';
-      return;
-    }
-    const done = progress.beaten > i, avail = progress.beaten >= i;
+let menuTier = 0;
+function levelPage() {
+  const t = menuTier, first = t * LEVELS_PER_TIER + 1;
+  let html = '<div class="tierbar"><button class="nav" id="tier-prev" type="button" aria-label="Previous tier" ' + (t === 0 ? 'disabled' : '') + '>‹</button>' +
+    '<div class="tiername"><b>' + TIERS[t].name + '</b><span>Levels ' + first + ' – ' + (first + LEVELS_PER_TIER - 1) + '</span></div>' +
+    '<button class="nav" id="tier-next" type="button" aria-label="Next tier" ' + (t === TIERS.length - 1 ? 'disabled' : '') + '>›</button></div>' +
+    '<p class="tierdesc">' + TIERS[t].desc + '</p><div class="levels">';
+  for (let n = first; n < first + LEVELS_PER_TIER; n++) {
+    const done = progress.beaten >= n, avail = progress.beaten + 1 >= n;
     const cls = 'lvl' + (done ? ' done' : avail ? ' next' : ' locked');
-    html += '<button class="' + cls + '" type="button" data-i="' + i + '" ' + (avail ? '' : 'disabled') + '><b>' + L.id + '</b><span>' + L.name + '</span><em>' + (done ? 'Best ' + progress.best[L.id] : avail ? 'Play' : 'Locked') + '</em></button>';
-  });
-  return html + '</div>';
+    html += '<button class="' + cls + '" type="button" data-n="' + n + '" ' + (avail ? '' : 'disabled') + '><b>' + n + '</b><em>' + (done ? progress.best[n] || '✓' : avail ? 'Play' : '🔒') + '</em></button>';
+  }
+  html += '</div>';
+  html += '<button class="endless" type="button" id="endless"><span><b>' + ENDLESS.name + '</b><br>' + ENDLESS.sub + '</span><em>Best ' + (progress.bestEndless || 0) + '</em></button>';
+  return html;
 }
 
 function showOverlay(kind, newBest) {
@@ -844,13 +984,14 @@ function showOverlay(kind, newBest) {
   let html = '';
   const L = S.level;
   if (kind === 'start') {
-    html = '<canvas id="hero" width="120" height="120" style="width:84px;height:84px"></canvas>' +
-      '<h1>LAST MATCH</h1><p class="tag">You are the gem that woke up. Don\'t get matched.</p>' + levelButtons() +
+    menuTier = tierOf(Math.min(TOTAL_LEVELS, progress.beaten + 1));
+    html = '<canvas id="hero" width="120" height="120" style="width:72px;height:72px"></canvas>' +
+      '<h1>LAST MATCH</h1><p class="tag">You are the gem that woke up. Don\'t get matched.</p><div id="levelpage"></div>' +
       '<details><summary>How to play</summary><div class="help">' +
       '<div><b>Move</b> Arrow keys, WASD, or swipe. Every move is a swap, and your swaps follow match-3 rules too. Line yourself up with two of your color and you\'re gone.</div>' +
       '<div><b>The hand</b> shows where the AI player will swipe next. If your gem glows red, that swipe takes you out. Get out of the line.</div>' +
-      '<div><b>Specials</b> Four in a row makes a blaster, an L or T makes a bomb, five makes a color bomb, six makes a cross. Swapping two specials together sets off a combo. Later boards also spawn diagonal blasters and seekers, which home in on you.</div>' +
-      '<div><b>Locks</b> Caged gems can\'t be swapped but can be matched. Fogged gems are hidden and can\'t be matched. Clearing anything next to a lock breaks it, and some levels unlock on a timer. Holes are just holes.</div>' +
+      '<div><b>Specials</b> appear as you climb the tiers: blasters, bombs, color bombs, crosses, diagonals and seekers. A special wears a badge showing what it does, and keeps the color of the gem it came from. Match it or hit it with another blast to set it off.</div>' +
+      '<div><b>Locks</b> Caged gems can\'t be swapped but can be matched. Fogged gems are hidden and can\'t be matched. Clearing anything next to a lock breaks it. Holes are just holes.</div>' +
       '<div><b>Win</b> by outlasting the AI\'s move budget, or by leaving it no legal move once the gem supply drains. Surviving fills the meter and earns power-ups (<b>1 2 3</b>). Endless never ends; chase the score.</div>' +
       '</div><div class="legend">' +
       ['H', 'V', 'cross', 'diag', 'bomb', 'seeker', 'rainbow'].map((sp) => '<div><canvas class="lg" data-sp="' + sp + '"></canvas>' + SPECIAL_NAMES[sp] + '</div>').join('') +
@@ -863,9 +1004,11 @@ function showOverlay(kind, newBest) {
     const stats = '<div class="result"><div><b>' + S.score + '</b><span>Score</span></div><div><b>' + fmtTime(S.time) + '</b><span>Survived</span></div><div><b>' + S.aiMoves + '</b><span>AI swipes</span></div><div><b>' + S.dodges + '</b><span>Dodged</span></div></div>' +
       (newBest ? '<p class="best">New best score!</p>' : '');
     if (kind === 'win') {
-      const hasNext = S.levelIdx + 1 < LEVELS.length && !LEVELS[S.levelIdx + 1].infinite;
-      html = '<h1>LEVEL CLEARED</h1><p class="tag">' + S.winReason + ' You are the last match standing.</p>' + stats +
-        '<div class="btnrow">' + (hasNext ? '<button class="btn" id="play" type="button">Next level</button>' : '<button class="btn" id="play" type="button">Play Endless</button>') +
+      const nextN = L.id + 1, hasNext = !L.infinite && nextN <= TOTAL_LEVELS;
+      let feature = '';
+      if (hasNext && tierOf(nextN) !== tierOf(L.id)) feature = '<div class="newfeat"><b>New in ' + TIERS[tierOf(nextN)].name + ':</b> ' + TIERS[tierOf(nextN)].desc + '</div>';
+      html = '<h1>LEVEL ' + L.id + ' CLEARED</h1><p class="tag">' + S.winReason + ' You are the last match standing.</p>' + stats + feature +
+        '<div class="btnrow">' + (hasNext ? '<button class="btn" id="play" type="button">Level ' + nextN + '</button>' : '<button class="btn" id="play" type="button">Play Endless</button>') +
         '<button class="btn alt" id="retry" type="button">Replay</button><button class="btn alt" id="menu" type="button">Menu</button></div>';
     } else {
       html = '<h1>MATCHED</h1><p class="cause">' + S.cause + '</p><p class="tag">' + (S.causeWho === 'player' ? 'And you did it to yourself. Ouch.' : 'The AI player got you.') + '</p>' + stats +
@@ -877,17 +1020,16 @@ function showOverlay(kind, newBest) {
   if (play) {
     play.addEventListener('click', () => {
       if (kind === 'pause') togglePause();
-      else if (kind === 'win') startLevel(S.levelIdx + 1 < LEVELS.length ? S.levelIdx + 1 : S.levelIdx);
-      else startLevel(S.levelIdx);
+      else if (kind === 'win') startLevel(L.infinite ? 'endless' : (L.id + 1 <= TOTAL_LEVELS ? L.id + 1 : 'endless'));
+      else startLevel(S.levelNum);
     });
     play.focus({ preventScroll: true });
   }
-  if (retry) retry.addEventListener('click', () => startLevel(S.levelIdx));
+  if (retry) retry.addEventListener('click', () => startLevel(S.levelNum));
   if (menu) menu.addEventListener('click', toMenu);
   if (kind === 'pause') overlay.onclick = (e) => { if (e.target === overlay || e.target.tagName === 'P' || e.target.tagName === 'H2') togglePause(); };
   if (kind === 'start') {
-    overlay.querySelectorAll('.lvl').forEach((b) => b.addEventListener('click', () => { if (!b.disabled) startLevel(+b.dataset.i); }));
-    const next = overlay.querySelector('.lvl.next') || overlay.querySelector('.lvl.endless'); if (next) next.focus({ preventScroll: true });
+    renderLevelPage();
     const hero = $('hero'), hc = hero.getContext('2d');
     const hg = makeGem(1); hg.player = true;
     drawGem(hc, hg, 60, 60, 46, 1, 'happy', { dx: .3, dy: -.2 }, 0);
@@ -903,6 +1045,15 @@ function showOverlay(kind, newBest) {
     });
   }
 }
+function renderLevelPage() {
+  const box = $('levelpage'); if (!box) return;
+  box.innerHTML = levelPage();
+  box.querySelectorAll('.lvl').forEach((b) => b.addEventListener('click', () => { if (!b.disabled) startLevel(+b.dataset.n); }));
+  $('endless').addEventListener('click', () => startLevel('endless'));
+  $('tier-prev').addEventListener('click', () => { menuTier = Math.max(0, menuTier - 1); renderLevelPage(); });
+  $('tier-next').addEventListener('click', () => { menuTier = Math.min(TIERS.length - 1, menuTier + 1); renderLevelPage(); });
+  const next = box.querySelector('.lvl.next'); if (next) next.focus({ preventScroll: true });
+}
 
 // ============================================================
 // INPUT
@@ -912,8 +1063,10 @@ window.addEventListener('keydown', (e) => {
   const k = e.key.toLowerCase();
   if (S.paused) { if (k === 'p' || k === 'enter' || k === ' ') { e.preventDefault(); togglePause(); } else if (k === 'escape') { e.preventDefault(); toMenu(); } return; }
   if (overlayShown) {
-    if (k === 'enter' || k === ' ') { e.preventDefault(); const b = $('play') || overlay.querySelector('.lvl.next') || overlay.querySelector('.lvl.endless'); if (b) b.click(); }
+    if (k === 'enter' || k === ' ') { if (document.activeElement && document.activeElement.tagName === 'BUTTON') return; e.preventDefault(); const b = $('play') || overlay.querySelector('.lvl.next') || $('endless'); if (b) b.click(); }
     else if (k === 'escape' && S.running === false) { showOverlay('start'); }
+    else if (k === 'arrowleft' && $('tier-prev')) $('tier-prev').click();
+    else if (k === 'arrowright' && $('tier-next')) $('tier-next').click();
     return;
   }
   if (k === 'p') { e.preventDefault(); togglePause(); return; }
@@ -973,6 +1126,8 @@ function animateFx(dt) {
   S.particles = S.particles.filter((p) => p.life > 0);
   for (const f of S.floats) f.t += dt / (f.big ? 1.4 : 1);
   S.floats = S.floats.filter((f) => f.t < 1);
+  for (const f of S.fx) f.t += dt / f.dur;
+  S.fx = S.fx.filter((f) => f.t < 1);
   const F = S.finger;
   F.vis += ((F.active ? 1 : 0) - F.vis) * Math.min(1, dt * 9);
   F.x += (F.tx - F.x) * Math.min(1, dt * 14); F.y += (F.ty - F.y) * Math.min(1, dt * 14);
@@ -983,6 +1138,7 @@ function animateFx(dt) {
 function update(dt) {
   animateGems(dt); animateFx(dt);
   if (!S.running) return;
+  const L = S.level;
   S.time += dt;
   S.shield = Math.max(0, S.shield - dt); S.glitch = Math.max(0, S.glitch - dt); S.freeze = Math.max(0, S.freeze - dt);
   S.playerCd = Math.max(0, S.playerCd - dt);
@@ -990,8 +1146,17 @@ function update(dt) {
     S.scoreAcc += dt * SCORE.perSecond; if (S.scoreAcc >= 1) { const n = Math.floor(S.scoreAcc); S.score += n; S.scoreAcc -= n; }
     if (S.slots.length < MAX_SLOTS) { S.meter += dt / METER_TIME; if (S.meter >= 1) { S.meter = 0; grantPowerup(); } }
     else S.meter = Math.min(1, S.meter + dt / METER_TIME);
-    if (S.level.unlockEvery) { S.unlockT -= dt; if (S.unlockT <= 0) { S.unlockT = S.level.unlockEvery; timedUnlock(); } }
-    if (S.level.cageEvery && !S.busy) { S.cageT -= dt; if (S.cageT <= 0) { S.cageT = Math.max(8, S.level.cageEvery - S.time / 30); spawnCage(); } }
+    if (L.unlockEvery) { S.unlockT -= dt; if (S.unlockT <= 0) { S.unlockT = L.unlockEvery; timedUnlock(); } }
+    if (L.cageEvery && !S.busy) { S.cageT -= dt; if (S.cageT <= 0) { S.cageT = Math.max(8, L.cageEvery - S.time / 30); spawnCage(); } }
+    if (L.shiftEvery) {
+      S.shiftT -= dt;
+      if (S.shiftT <= 3 && !S.shiftWarned) { S.shiftWarned = true; SFX.tick(); }
+      if (S.shiftT <= 0) { if (!S.busy && shapeshift()) { S.shiftT = L.shiftEvery; S.shiftWarned = false; } else S.shiftT = 1.5; }
+    }
+    if (L.rushEvery) {
+      if (S.rush > 0) S.rush = Math.max(0, S.rush - dt);
+      else { S.rushT -= dt; if (S.rushT <= 0) { S.rushT = L.rushEvery; S.rush = L.rushLen; floatText(COLS / 2, ROWS / 2 - 1, 'RUSH!', '#ff3b5c', true); SFX.rush(); } }
+    }
   }
   if (S.queued) {
     S.queued.t -= dt;
@@ -1016,6 +1181,40 @@ function shapePath(c, shape, s) {
   else if (shape === 'square') { const h = s * .92; c.moveTo(-h + s * .35, -h); c.arcTo(h, -h, h, h, s * .35); c.arcTo(h, h, -h, h, s * .35); c.arcTo(-h, h, -h, -h, s * .35); c.arcTo(-h, -h, h, -h, s * .35); c.closePath(); }
   else if (shape === 'star') { for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5; const rr = i % 2 ? s * .62 : s * 1.12; const x = Math.cos(a) * rr, y = Math.sin(a) * rr; if (i) c.lineTo(x, y); else c.moveTo(x, y); } c.closePath(); }
 }
+function tri(c, x, y, ang, size) {
+  c.save(); c.translate(x, y); c.rotate(ang);
+  c.beginPath(); c.moveTo(size, 0); c.lineTo(-size * .7, -size * .8); c.lineTo(-size * .7, size * .8); c.closePath(); c.fill();
+  c.restore();
+}
+
+// Badge drawn on special gems: dark disc, white glyph showing the blast shape, pulsing white ring.
+function drawBadge(c, s, sp, t) {
+  const pulse = .5 + .5 * Math.sin(t * 5);
+  c.save();
+  c.strokeStyle = 'rgba(255,255,255,' + (.35 + .45 * pulse) + ')'; c.lineWidth = s * .1;
+  c.beginPath(); c.arc(0, 0, s * 1.02, 0, Math.PI * 2); c.stroke();
+  c.fillStyle = 'rgba(29,18,51,.8)'; c.beginPath(); c.arc(0, 0, s * .6, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = 'rgba(255,255,255,.9)'; c.lineWidth = s * .07; c.beginPath(); c.arc(0, 0, s * .6, 0, Math.PI * 2); c.stroke();
+  c.fillStyle = '#ffffff'; c.strokeStyle = '#ffffff'; c.lineCap = 'round'; c.lineWidth = s * .12;
+  const a = s * .2, d = s * .38;
+  if (sp === 'H' || sp === 'cross') { c.beginPath(); c.moveTo(-d * .6, 0); c.lineTo(d * .6, 0); c.stroke(); tri(c, -d, 0, Math.PI, a); tri(c, d, 0, 0, a); }
+  if (sp === 'V' || sp === 'cross') { c.beginPath(); c.moveTo(0, -d * .6); c.lineTo(0, d * .6); c.stroke(); tri(c, 0, -d, -Math.PI / 2, a); tri(c, 0, d, Math.PI / 2, a); }
+  if (sp === 'diag') { for (let i = 0; i < 4; i++) { const ang = Math.PI / 4 + i * Math.PI / 2; c.beginPath(); c.moveTo(0, 0); c.lineTo(Math.cos(ang) * d * .55, Math.sin(ang) * d * .55); c.stroke(); tri(c, Math.cos(ang) * d, Math.sin(ang) * d, ang, a * .9); } }
+  if (sp === 'bomb' || sp === 'mega') {
+    c.lineWidth = s * .09; c.beginPath(); c.arc(0, 0, s * .34, 0, Math.PI * 2); c.stroke();
+    c.beginPath(); c.arc(0, 0, s * .12, 0, Math.PI * 2); c.fill();
+    if (sp === 'mega') { c.setLineDash([s * .12, s * .1]); c.beginPath(); c.arc(0, 0, s * .48, 0, Math.PI * 2); c.stroke(); c.setLineDash([]); }
+    c.strokeStyle = '#ffb52e'; c.beginPath(); c.moveTo(s * .25, -s * .25); c.quadraticCurveTo(s * .45, -s * .45, s * .42, -s * .6); c.stroke();
+    c.fillStyle = '#ffd23f'; c.beginPath(); c.arc(s * .42, -s * .6, s * .08 + s * .05 * pulse, 0, Math.PI * 2); c.fill();
+  }
+  if (sp === 'seeker') {
+    c.fillStyle = '#ff3b5c'; c.beginPath(); c.arc(0, 0, s * (.24 + .05 * pulse), 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#fff'; c.beginPath(); c.arc(-s * .08, -s * .08, s * .08, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = '#fff'; c.lineWidth = s * .08;
+    for (let i = 0; i < 4; i++) { const ang = i * Math.PI / 2 + t * 2; c.beginPath(); c.moveTo(Math.cos(ang) * s * .34, Math.sin(ang) * s * .34); c.lineTo(Math.cos(ang) * s * .52, Math.sin(ang) * s * .52); c.stroke(); }
+  }
+  c.restore();
+}
 
 function drawGem(c, g, px, py, size, alpha, mood, look, t) {
   const spec = g.color >= 0 ? GEMS[g.color] : null;
@@ -1034,40 +1233,14 @@ function drawGem(c, g, px, py, size, alpha, mood, look, t) {
     c.beginPath(); c.arc(0, 0, s, 0, Math.PI * 2); c.fillStyle = grad; c.fill(); c.strokeStyle = '#2a1040'; c.stroke();
     c.beginPath(); c.arc(0, 0, s * .45, 0, Math.PI * 2); c.fillStyle = '#fff'; c.fill();
     c.beginPath(); c.arc(0, 0, s * .2, 0, Math.PI * 2); c.fillStyle = '#2a1040'; c.fill();
+    const pulse = .5 + .5 * Math.sin(t * 5);
+    c.strokeStyle = 'rgba(255,255,255,' + (.35 + .45 * pulse) + ')'; c.lineWidth = s * .1; c.beginPath(); c.arc(0, 0, s * 1.02, 0, Math.PI * 2); c.stroke();
   } else {
     const grad = c.createRadialGradient(-s * .35, -s * .4, s * .1, 0, 0, s * 1.2);
     grad.addColorStop(0, spec.l); grad.addColorStop(.35, spec.c); grad.addColorStop(1, spec.d);
     shapePath(c, shape, s); c.fillStyle = grad; c.fill(); c.strokeStyle = spec.d; c.stroke();
-    const sp = g.special;
-    if (sp === 'H' || sp === 'V' || sp === 'cross' || sp === 'diag') {
-      c.save(); shapePath(c, shape, s); c.clip();
-      c.strokeStyle = 'rgba(255,255,255,.85)'; c.lineWidth = s * .16; c.lineCap = 'round';
-      const L = s * 1.3;
-      for (let i = -1; i <= 1; i++) {
-        c.beginPath();
-        if (sp === 'H' || sp === 'cross') { c.moveTo(-L, i * s * .45); c.lineTo(L, i * s * .45); }
-        if (sp === 'V' || sp === 'cross') { c.moveTo(i * s * .45, -L); c.lineTo(i * s * .45, L); }
-        if (sp === 'diag') { c.moveTo(-L + i * s * .5, -L - i * s * .5); c.lineTo(L + i * s * .5, L - i * s * .5); c.moveTo(-L + i * s * .5, L + i * s * .5); c.lineTo(L + i * s * .5, -L + i * s * .5); }
-        c.stroke();
-      }
-      c.restore();
-    } else if (sp === 'bomb' || sp === 'mega') {
-      c.save(); shapePath(c, shape, s); c.clip();
-      c.strokeStyle = 'rgba(30,10,40,.85)'; c.lineWidth = s * .16; c.setLineDash([s * .28, s * .2]); c.lineDashOffset = -t * 12;
-      c.beginPath(); c.arc(0, 0, s * .62, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
-      c.fillStyle = '#fff'; c.beginPath(); c.arc(0, 0, s * .22, 0, Math.PI * 2); c.fill();
-      c.restore();
-    } else if (sp === 'seeker') {
-      c.save(); shapePath(c, shape, s); c.clip();
-      const pulse = .5 + .5 * Math.sin(t * 6);
-      c.fillStyle = '#1d1233'; c.beginPath(); c.arc(0, 0, s * .55, 0, Math.PI * 2); c.fill();
-      c.fillStyle = '#ff3b5c'; c.beginPath(); c.arc(0, 0, s * (.28 + .06 * pulse), 0, Math.PI * 2); c.fill();
-      c.fillStyle = '#fff'; c.beginPath(); c.arc(-s * .1, -s * .1, s * .1, 0, Math.PI * 2); c.fill();
-      c.strokeStyle = 'rgba(255,255,255,.8)'; c.lineWidth = s * .1; c.lineCap = 'round';
-      for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + t * 2; c.beginPath(); c.moveTo(Math.cos(a) * s * .62, Math.sin(a) * s * .62); c.lineTo(Math.cos(a) * s * .9, Math.sin(a) * s * .9); c.stroke(); }
-      c.restore();
-    }
     if (!g.player) { c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.ellipse(-s * .38, -s * .42, s * .22, s * .13, -.7, 0, Math.PI * 2); c.fill(); }
+    if (g.special) drawBadge(c, s, g.special, t);
   }
   if (g.player) drawFace(c, s, mood || 'happy', look || { dx: 0, dy: 0 }, t);
   c.restore();
@@ -1158,6 +1331,25 @@ function drawArrow(c, x1, y1, x2, y2, color, alpha) {
   c.restore();
 }
 
+function drawFx(c) {
+  for (const f of S.fx) {
+    const k = 1 - f.t;
+    c.save(); c.globalCompositeOperation = 'lighter';
+    if (f.kind === 'beam') {
+      c.globalAlpha = .9 * k; c.lineCap = 'round';
+      c.strokeStyle = f.color; c.lineWidth = CELL * .7 * k; c.beginPath(); c.moveTo(f.x1 * CELL, f.y1 * CELL); c.lineTo(f.x2 * CELL, f.y2 * CELL); c.stroke();
+      c.strokeStyle = '#ffffff'; c.lineWidth = CELL * .25 * k; c.stroke();
+    } else if (f.kind === 'ring') {
+      const rad = lerp(f.r0, f.r1, 1 - k * k) * CELL;
+      c.globalAlpha = .9 * k; c.strokeStyle = f.color; c.lineWidth = CELL * .35 * k; c.beginPath(); c.arc(f.x * CELL, f.y * CELL, rad, 0, Math.PI * 2); c.stroke();
+      c.strokeStyle = '#ffffff'; c.lineWidth = CELL * .12 * k; c.stroke();
+    } else if (f.kind === 'flash') {
+      c.globalAlpha = .5 * k; c.fillStyle = f.color; c.fillRect(-20, -20, W + 40, H + 40);
+    }
+    c.restore();
+  }
+}
+
 function render(t) {
   const c = ctx;
   c.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -1205,14 +1397,22 @@ function render(t) {
     if (ty === CAGE) drawCage(c, px, py, CELL);
   });
   for (const g of S.popping) drawGem(c, g, (g.rx + .5) * CELL, (g.ry + .5) * CELL, gs, 1, g.player ? 'dead' : null, look, t);
+  drawFx(c);
   for (const p of S.particles) { c.globalAlpha = Math.max(0, p.life); c.fillStyle = p.color; c.beginPath(); c.arc(p.x * CELL, p.y * CELL, p.size * CELL, 0, Math.PI * 2); c.fill(); }
   c.globalAlpha = 1;
+  // shapeshift countdown over the player's head
+  if (pl && S.running && S.level.shiftEvery && S.shiftT <= 3) {
+    c.save(); c.font = '700 ' + CELL * .42 + 'px Fredoka, Nunito, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.lineWidth = 5; c.strokeStyle = '#1d1233'; c.lineJoin = 'round'; const tx = (pl.c + .5) * CELL, ty = (pl.r - .35) * CELL;
+    c.strokeText(String(Math.ceil(S.shiftT)), tx, ty); c.fillStyle = '#c77dff'; c.fillText(String(Math.ceil(S.shiftT)), tx, ty); c.restore();
+  }
   if (S.finger.vis > .02 && A.plan) {
     const p = A.plan;
     if (A.state === 'tele') drawArrow(c, (p.c1 + .5) * CELL, (p.r1 + .5) * CELL, (p.c2 + .5) * CELL, (p.r2 + .5) * CELL, (pv && pv.lethal) ? '#ff3b5c' : '#ffd23f', S.finger.vis * (.55 + .45 * pulse));
     let hx = S.finger.x * CELL, hy = S.finger.y * CELL, tint = '#ffffff';
     if (S.glitch > 0) { hx += (Math.random() - .5) * 10; hy += (Math.random() - .5) * 10; tint = Math.random() < .5 ? '#7ff0ff' : '#ff7fe6'; }
     if (S.freeze > 0) tint = '#bfe9ff';
+    if (S.rush > 0) tint = '#ffb3c0';
     const bob = A.state === 'tele' ? Math.sin(t * 12) * 3 : 0;
     drawHand(c, hx + CELL * .1, hy + CELL * .05 + bob, S.finger.vis, CELL / 60, tint);
   }
@@ -1222,6 +1422,7 @@ function render(t) {
     c.lineWidth = 5; c.strokeStyle = '#1d1233'; c.lineJoin = 'round'; c.strokeText(f.text, f.x * CELL, fy); c.fillStyle = f.color; c.fillText(f.text, f.x * CELL, fy); c.restore();
   }
   if (S.freeze > 0) { c.fillStyle = 'rgba(160,220,255,.12)'; c.fillRect(-20, -20, W + 40, H + 40); }
+  if (S.rush > 0) { c.fillStyle = 'rgba(255,59,92,' + (.06 + .05 * pulse) + ')'; c.fillRect(-20, -20, W + 40, H + 40); }
   if (S.glitch > 0) { c.fillStyle = 'rgba(65,182,255,.08)'; for (let y = (t * 200) % 8; y < H; y += 8) c.fillRect(0, y, W, 2); }
   updateHud();
 }
@@ -1235,7 +1436,7 @@ function frame(now) {
   render(now / 1000);
   requestAnimationFrame(frame);
 }
-S.levelIdx = Math.min(progress.beaten, LEVELS.length - 2); S.level = LEVELS[S.levelIdx];
+S.levelNum = Math.min(TOTAL_LEVELS, progress.beaten + 1); S.level = makeLevel(S.levelNum);
 newBoard(); resize(); last = performance.now(); renderSlots();
 document.addEventListener('visibilitychange', () => { if (document.hidden && S.running && !S.paused) togglePause(); });
 showOverlay('start');
