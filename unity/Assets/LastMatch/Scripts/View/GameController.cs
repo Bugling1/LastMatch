@@ -16,7 +16,7 @@ namespace LastMatch.View
         readonly Stack<GemView> viewPool = new Stack<GemView>();
         readonly List<SpriteRenderer> cellSprites = new List<SpriteRenderer>();
         readonly List<SpriteRenderer> hiPool = new List<SpriteRenderer>();
-        SpriteRenderer hand, arrow, shieldRing;
+        SpriteRenderer hand, arrow, shieldRing, backdrop, boardPanel, boardShadow, playerGlow;
         TextMesh shiftText;
 
         class Fx { public FxEvent E; public float T; public SpriteRenderer A, B; }
@@ -82,6 +82,10 @@ namespace LastMatch.View
             cellRoot = new GameObject("Cells").transform; cellRoot.SetParent(boardRoot, false);
             gemRoot = new GameObject("Gems").transform; gemRoot.SetParent(boardRoot, false);
             fxRoot = new GameObject("Fx").transform; fxRoot.SetParent(boardRoot, false);
+            backdrop = NewSprite(null, "Backdrop", SpriteFactory.Backdrop, -20, Color.white); backdrop.transform.position = new Vector3(0, 0, 5);
+            boardShadow = NewSprite(boardRoot, "BoardShadow", SpriteFactory.Shadow9, -6, new Color(0, 0, 0, .45f)); boardShadow.drawMode = SpriteDrawMode.Sliced;
+            boardPanel = NewSprite(boardRoot, "BoardPanel", SpriteFactory.Panel9, -5, Palette.Board); boardPanel.drawMode = SpriteDrawMode.Sliced;
+            playerGlow = NewSprite(fxRoot, "PlayerGlow", SpriteFactory.Glow, 8, Palette.Gold); playerGlow.transform.localScale = Vector3.one * 1.9f;
             shieldRing = NewSprite(fxRoot, "Shield", SpriteFactory.Ring, 9, Palette.Gold); shieldRing.transform.localScale = Vector3.one * 1.3f; shieldRing.enabled = false;
             arrow = NewSprite(fxRoot, "Arrow", SpriteFactory.Arrow, 29, Palette.Gold); arrow.enabled = false;
             hand = NewSprite(fxRoot, "Hand", SpriteFactory.Hand, 30, Color.white); hand.enabled = false;
@@ -103,17 +107,18 @@ namespace LastMatch.View
             tintImg = UiKit.Panel(canvas.transform, new Color(0, 0, 0, 0), "Tint"); UiKit.Stretch(tintImg.rectTransform); tintImg.raycastTarget = false;
             flashImg = UiKit.Panel(canvas.transform, new Color(1, 1, 1, 0), "Flash"); UiKit.Stretch(flashImg.rectTransform); flashImg.raycastTarget = false;
 
-            var top = UiKit.Panel(canvas.transform, new Color(0, 0, 0, 0), "Top"); UiKit.AnchorTop(top.rectTransform, 120, 12, 12, 8); top.raycastTarget = false;
-            var tv = UiKit.VStack(top.transform, 2, TextAnchor.UpperLeft); UiKit.Stretch(tv.GetComponent<RectTransform>());
+            var top = UiKit.Panel(canvas.transform, new Color(.08f, .055f, .22f, .78f), "Top", SpriteFactory.Panel9); top.pixelsPerUnitMultiplier = 2.5f; UiKit.AnchorTop(top.rectTransform, 120, 10, 10, 8); top.raycastTarget = false;
+            var tv = UiKit.VStack(top.transform, 2, TextAnchor.UpperLeft); UiKit.Stretch(tv.GetComponent<RectTransform>(), 12, 12, 6, 4);
             var titleRow = UiKit.HStack(tv.transform, 10, TextAnchor.MiddleLeft);
             var brand = UiKit.Label(titleRow.transform, "LAST MATCH", 26, Palette.Gold, TextAnchor.MiddleLeft); UiKit.Size(brand, 180, 30);
+            var bs = brand.gameObject.AddComponent<Shadow>(); bs.effectColor = Palette.Hex("#7a2a55"); bs.effectDistance = new Vector2(0, -2.5f);
             lvlName = UiKit.Label(titleRow.transform, "", 13, Palette.Muted, TextAnchor.MiddleLeft); UiKit.Size(lvlName, 300, 30);
             var stats = UiKit.HStack(tv.transform, 6, TextAnchor.MiddleLeft);
             scoreT = StatBlock(stats.transform, "SCORE"); timeT = StatBlock(stats.transform, "SURVIVED"); supplyT = StatBlock(stats.transform, "GEM SUPPLY"); movesT = StatBlock(stats.transform, "AI MOVES LEFT"); dodgesT = StatBlock(stats.transform, "DODGED");
             chipsT = UiKit.Label(tv.transform, "", 13, Palette.Gold, TextAnchor.MiddleLeft); UiKit.Size(chipsT, 500, 22);
 
-            var dock = UiKit.Panel(canvas.transform, new Color(0, 0, 0, 0), "Dock"); UiKit.AnchorBottom(dock.rectTransform, 110, 12, 12, 10); dock.raycastTarget = false;
-            var dh = UiKit.HStack(dock.transform, 10, TextAnchor.MiddleCenter); UiKit.Stretch(dh.GetComponent<RectTransform>());
+            var dock = UiKit.Panel(canvas.transform, new Color(.08f, .055f, .22f, .78f), "Dock", SpriteFactory.Panel9); dock.pixelsPerUnitMultiplier = 2.5f; UiKit.AnchorBottom(dock.rectTransform, 110, 10, 10, 10); dock.raycastTarget = false;
+            var dh = UiKit.HStack(dock.transform, 10, TextAnchor.MiddleCenter); UiKit.Stretch(dh.GetComponent<RectTransform>(), 12, 12, 8, 8);
             var mv = UiKit.VStack(dh.transform, 4, TextAnchor.MiddleLeft); var mle = mv.gameObject.AddComponent<LayoutElement>(); mle.flexibleWidth = 1; mle.minWidth = 200; mle.preferredWidth = 240; mle.preferredHeight = 60;
             var ml = UiKit.Label(mv.transform, "SURVIVAL METER · EARNS A POWER-UP", 11, Palette.Muted, TextAnchor.MiddleLeft); UiKit.Size(ml, 240, 16); ml.horizontalOverflow = HorizontalWrapMode.Overflow;
             var bar = UiKit.Panel(mv.transform, Palette.Hex("#140e33"), "MeterBg", SpriteFactory.Square); UiKit.Size(bar, 240, 18); var ble = bar.GetComponent<LayoutElement>(); ble.flexibleWidth = 1;
@@ -135,6 +140,7 @@ namespace LastMatch.View
         {
             var v = UiKit.VStack(parent, 0, TextAnchor.MiddleCenter); UiKit.Size(v, 96, 46);
             var val = UiKit.Label(v.transform, "0", 22, Palette.Cream); UiKit.Size(val, 96, 26);
+            var vs = val.gameObject.AddComponent<Shadow>(); vs.effectColor = new Color(0, 0, 0, .5f); vs.effectDistance = new Vector2(0, -1.5f);
             var lbl = UiKit.Label(v.transform, label, 9, Palette.Muted); UiKit.Size(lbl, 96, 14);
             return val;
         }
@@ -252,6 +258,11 @@ namespace LastMatch.View
             lastAspect = aspect; lastCols = sim.B.Cols; lastRows = sim.B.Rows;
             cam.orthographicSize = Mathf.Max((sim.B.Cols + 1f) / (2f * aspect), sim.B.Rows / 2f + 2.9f);
             cam.transform.position = new Vector3(0, 0, -5);
+            float h = cam.orthographicSize * 2f, w = h * aspect;
+            backdrop.transform.localScale = new Vector3(w + .2f, h + .2f, 1);
+            boardPanel.size = new Vector2(sim.B.Cols + .5f, sim.B.Rows + .5f);
+            boardShadow.size = new Vector2(sim.B.Cols + 1.3f, sim.B.Rows + 1.3f);
+            boardShadow.transform.localPosition = new Vector3(0, -.12f, 0);
         }
 
         Vector3 CellPos(float r, float c) => new Vector3(c - sim.B.Cols / 2f + .5f, -(r - sim.B.Rows / 2f + .5f), 0);
@@ -352,6 +363,14 @@ namespace LastMatch.View
             foreach (var kv in views) if (!seen.Contains(kv.Key)) stale.Add(kv.Key);
             foreach (var id in stale) { var v = views[id]; v.gameObject.SetActive(false); viewPool.Push(v); views.Remove(id); }
 
+            // soft glow under the player so it reads at a glance
+            if (pl.HasValue && !sim.Dead)
+            {
+                var pg = B.Grid[pl.Value.R, pl.Value.C];
+                playerGlow.enabled = true; playerGlow.transform.localPosition = CellPos(pg.RY, pg.RX);
+                var gc = mood == "scared" ? Palette.Danger : Palette.Gold; gc.a = .22f + .1f * pulse; playerGlow.color = gc;
+            }
+            else playerGlow.enabled = false;
             // shield aura
             if (pl.HasValue && sim.Shield > 0)
             {
@@ -555,7 +574,7 @@ namespace LastMatch.View
             return v.transform;
         }
 
-        Text Title(Transform p, string s, int size = 44) { var t = UiKit.Label(p, s, size, Palette.Gold); UiKit.Size(t, 500, size + 10); return t; }
+        Text Title(Transform p, string s, int size = 44) { var t = UiKit.Label(p, s, size, Palette.Gold); UiKit.Size(t, 500, size + 10); var sh = t.gameObject.AddComponent<Shadow>(); sh.effectColor = Palette.Hex("#7a2a55"); sh.effectDistance = new Vector2(0, -3f); return t; }
         Text Para(Transform p, string s, int size = 15, float h = 44) { var t = UiKit.Label(p, s, size, Palette.Hex("#e3dcff"), TextAnchor.MiddleCenter, FontStyle.Normal); UiKit.Size(t, 460, h); return t; }
 
         void ShowMenu()

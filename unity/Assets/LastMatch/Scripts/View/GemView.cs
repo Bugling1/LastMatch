@@ -92,12 +92,9 @@ namespace LastMatch.View
             else
             {
                 var look2 = Palette.Gems[Mathf.Clamp(g.Color, 0, Palette.Gems.Length - 1)];
-                var shape = SpriteFactory.Shapes[Mathf.Clamp(g.Color, 0, SpriteFactory.Shapes.Length - 1)];
-                Show(outline, true); Show(body, true);
-                outline.sprite = shape; body.sprite = shape;
-                outline.color = new Color(look2.D.r, look2.D.g, look2.D.b, alpha);
-                body.color = new Color(look2.C.r, look2.C.g, look2.C.b, alpha);
-                if (!isPlayerFace) { Show(highlight, true); highlight.color = new Color(1, 1, 1, .55f * alpha); }
+                Show(body, true);
+                body.sprite = SpriteFactory.GemBodies[Mathf.Clamp(g.Color, 0, SpriteFactory.GemBodies.Length - 1)];
+                body.color = new Color(1, 1, 1, alpha);
                 if (g.Special != Special.None)
                 {
                     Show(badge, true); badge.sprite = SpriteFactory.Badges[g.Special]; badge.color = new Color(1, 1, 1, alpha);

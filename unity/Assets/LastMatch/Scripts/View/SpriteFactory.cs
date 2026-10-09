@@ -59,13 +59,11 @@ namespace LastMatch.View
             float cx = x + w / 2, cy = y + h / 2, hw = w / 2 - rad, hh = h / 2 - rad;
             Fill((px2, py2) => { float dx = Mathf.Max(Mathf.Abs(px2 - cx) - hw, 0), dy = Mathf.Max(Mathf.Abs(py2 - cy) - hh, 0); return Mathf.Sqrt(dx * dx + dy * dy) - rad; }, c, (int)x - 1, (int)y - 1, (int)(x + w) + 2, (int)(y + h) + 2);
         }
-        public void Poly(Vector2[] pts, Color c)
+        /// <summary>Signed distance to a simple polygon: distance to the nearest edge, negative inside (even-odd).</summary>
+        public static Func<float, float, float> PolySdf(Vector2[] pts)
         {
-            float minx = float.MaxValue, miny = float.MaxValue, maxx = float.MinValue, maxy = float.MinValue;
-            foreach (var p in pts) { minx = Mathf.Min(minx, p.x); miny = Mathf.Min(miny, p.y); maxx = Mathf.Max(maxx, p.x); maxy = Mathf.Max(maxy, p.y); }
-            Fill((x, y) =>
+            return (x, y) =>
             {
-                // signed distance to a convex or simple polygon: distance to the nearest edge, negative when inside (even-odd)
                 float d = float.MaxValue; bool inside = false;
                 for (int i = 0, j = pts.Length - 1; i < pts.Length; j = i++)
                 {
@@ -77,17 +75,29 @@ namespace LastMatch.View
                     if ((a.y > y) != (b.y > y) && x < (b.x - a.x) * (y - a.y) / (b.y - a.y + 1e-9f) + a.x) inside = !inside;
                 }
                 return inside ? -d : d;
-            }, c, (int)minx - 2, (int)miny - 2, (int)maxx + 3, (int)maxy + 3);
+            };
+        }
+        public static Func<float, float, float> RoundRectSdf(float x, float y, float w, float h, float rad)
+        {
+            float cx = x + w / 2, cy = y + h / 2, hw = w / 2 - rad, hh = h / 2 - rad;
+            return (px2, py2) => { float dx = Mathf.Max(Mathf.Abs(px2 - cx) - hw, 0), dy = Mathf.Max(Mathf.Abs(py2 - cy) - hh, 0); return Mathf.Sqrt(dx * dx + dy * dy) - rad; };
+        }
+        public void Poly(Vector2[] pts, Color c)
+        {
+            float minx = float.MaxValue, miny = float.MaxValue, maxx = float.MinValue, maxy = float.MinValue;
+            foreach (var p in pts) { minx = Mathf.Min(minx, p.x); miny = Mathf.Min(miny, p.y); maxx = Mathf.Max(maxx, p.x); maxy = Mathf.Max(maxy, p.y); }
+            Fill(PolySdf(pts), c, (int)minx - 2, (int)miny - 2, (int)maxx + 3, (int)maxy + 3);
         }
         public void Shade(Func<float, float, Color> f)
         {
             for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) { var c = f(x + .5f, y + .5f); if (c.a > 0) Blend(x, y, c, 1); }
         }
 
-        public Sprite ToSprite(float pixelsPerUnit, Vector2? pivot = null)
+        public Sprite ToSprite(float pixelsPerUnit, Vector2? pivot = null, float border = 0)
         {
             var tex = new Texture2D(W, H, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
             tex.SetPixels(px); tex.Apply();
+            if (border > 0) return Sprite.Create(tex, new Rect(0, 0, W, H), pivot ?? new Vector2(.5f, .5f), pixelsPerUnit, 0, SpriteMeshType.FullRect, new Vector4(border, border, border, border));
             return Sprite.Create(tex, new Rect(0, 0, W, H), pivot ?? new Vector2(.5f, .5f), pixelsPerUnit);
         }
     }
@@ -118,6 +128,8 @@ namespace LastMatch.View
     {
         public const float PPU = 128f;      // one cell = 128 px = 1 world unit
         public static Sprite[] Shapes;       // by gem index
+        public static Sprite[] GemBodies;    // shaded, outlined, glossy gem per color
+        public static Sprite Panel9, Shadow9, Glow, Backdrop;
         public static Sprite Highlight, EyeWhite, Pupil, Smile, MouthO, XMark, Glasses, Brow, Dot, Ring, Beam, Cell, Hand, Arrow, Cage, FogTile, Rainbow, Square;
         public static Dictionary<Special, Sprite> Badges = new Dictionary<Special, Sprite>();
         static bool built;
@@ -127,6 +139,9 @@ namespace LastMatch.View
             if (built) return; built = true;
             Shapes = new Sprite[Palette.Gems.Length];
             for (int i = 0; i < Shapes.Length; i++) Shapes[i] = Shape(Palette.Gems[i].Shape);
+            GemBodies = new Sprite[Palette.Gems.Length];
+            for (int i = 0; i < GemBodies.Length; i++) GemBodies[i] = GemBody(i);
+            Panel9 = MakePanel(); Shadow9 = MakeShadow(); Glow = MakeGlow(); Backdrop = MakeBackdrop();
             Highlight = Make(64, 32, r => r.Ellipse(32, 16, 28, 12, Color.white));
             EyeWhite = Make(64, 72, r => { r.Ellipse(32, 36, 30, 34, Palette.Ink); r.Ellipse(32, 36, 25, 29, Color.white); });
             Pupil = Make(32, 32, r => { r.Circle(16, 16, 14, Palette.Ink); r.Circle(11, 21, 4.5f, Color.white); });
@@ -138,7 +153,7 @@ namespace LastMatch.View
             Dot = Make(32, 32, r => r.Circle(16, 16, 15, Color.white));
             Ring = Make(128, 128, r => r.Ring(64, 64, 56, 12, Color.white));
             Beam = Make(128, 32, r => r.Capsule(16, 16, 112, 16, 28, Color.white));
-            Cell = Make(128, 128, r => r.RoundRect(2, 2, 124, 124, 22, Color.white));
+            Cell = MakeCell();
             Square = Make(32, 32, r => r.RoundRect(0, 0, 32, 32, 6, Color.white));
             Hand = MakeHand();
             Arrow = Make(128, 48, r => r.Poly(new[] { new Vector2(2, 16), new Vector2(84, 16), new Vector2(84, 2), new Vector2(126, 24), new Vector2(84, 46), new Vector2(84, 32), new Vector2(2, 32) }, Color.white), new Vector2(0, .5f));
@@ -168,6 +183,94 @@ namespace LastMatch.View
                     default: { var pts = new Vector2[10]; for (int i = 0; i < 10; i++) { float a = -Mathf.PI / 2 + i * Mathf.PI / 5; float rr = i % 2 == 1 ? s * .62f : s * 1.12f; pts[i] = new Vector2(cx + Mathf.Cos(a) * rr, cy + Mathf.Sin(a) * rr); } r.Poly(pts, Color.white); break; }
                 }
             });
+        }
+
+        static Func<float, float, float> ShapeSdf(string shape, float cx, float cy, float s)
+        {
+            switch (shape)
+            {
+                case "circle": return (x, y) => Mathf.Sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy)) - s;
+                case "diamond": return Raster.PolySdf(new[] { new Vector2(cx, cy - s * 1.08f), new Vector2(cx + s * .92f, cy), new Vector2(cx, cy + s * 1.08f), new Vector2(cx - s * .92f, cy) });
+                case "hex": { var pts = new Vector2[6]; for (int i = 0; i < 6; i++) { float a = Mathf.PI / 6 + i * Mathf.PI / 3; pts[i] = new Vector2(cx + Mathf.Cos(a) * s * 1.05f, cy + Mathf.Sin(a) * s * 1.05f); } return Raster.PolySdf(pts); }
+                case "square": return Raster.RoundRectSdf(cx - s * .92f, cy - s * .92f, s * 1.84f, s * 1.84f, s * .35f);
+                default: { var pts = new Vector2[10]; for (int i = 0; i < 10; i++) { float a = -Mathf.PI / 2 + i * Mathf.PI / 5; float rr = i % 2 == 1 ? s * .62f : s * 1.12f; pts[i] = new Vector2(cx + Mathf.Cos(a) * rr, cy + Mathf.Sin(a) * rr); } return Raster.PolySdf(pts); }
+            }
+        }
+
+        /// <summary>A gem with a dark outline, a light-from-top-left gradient, a darker rim and a glossy spot, all baked.</summary>
+        static Sprite GemBody(int color)
+        {
+            var look = Palette.Gems[color];
+            const float cx = 64, cy = 64, s = 48;
+            var sdf = ShapeSdf(look.Shape, cx, cy, s);
+            float lx = cx - s * .35f, ly = cy + s * .4f;
+            return Make(128, 128, r =>
+            {
+                r.Fill((x, y) => sdf(x, y) - 5f, look.D);
+                r.Shade((x, y) =>
+                {
+                    float d = sdf(x, y); if (d > .5f) return new Color(0, 0, 0, 0);
+                    float a = Mathf.Clamp01(.5f - d);
+                    float k = Mathf.Sqrt((x - lx) * (x - lx) + (y - ly) * (y - ly)) / (s * 1.25f);
+                    Color c = k < .35f ? Color.Lerp(look.L, look.C, k / .35f) : Color.Lerp(look.C, look.D, Mathf.Clamp01((k - .35f) / .75f));
+                    float rim = Mathf.Clamp01(-d / 7f);
+                    c = Color.Lerp(Color.Lerp(look.D, c, .35f), c, rim);
+                    c.a = a; return c;
+                });
+                float gx = cx - s * .36f, gy = cy + s * .42f, ca = Mathf.Cos(.6f), sa = Mathf.Sin(.6f);
+                r.Shade((x, y) =>
+                {
+                    if (sdf(x, y) > -2) return new Color(0, 0, 0, 0);
+                    float dx = x - gx, dy = y - gy; float u = (dx * ca + dy * sa) / (s * .3f), v = (-dx * sa + dy * ca) / (s * .15f);
+                    float q = u * u + v * v; if (q > 1) return new Color(0, 0, 0, 0);
+                    return new Color(1, 1, 1, .6f * (1 - q * q));
+                });
+            });
+        }
+
+        static Sprite MakeCell()
+        {
+            var sdf = Raster.RoundRectSdf(2, 2, 124, 124, 22);
+            return Make(128, 128, r => r.Shade((x, y) =>
+            {
+                float d = sdf(x, y); if (d > .5f) return new Color(0, 0, 0, 0);
+                float a = Mathf.Clamp01(.5f - d);
+                float v = .82f + .18f * (y / 128f);
+                float edge = Mathf.Clamp01(-d / 3f);
+                v *= .78f + .22f * edge;
+                if (y > 118 && d < -1) v = Mathf.Min(1.1f, v + .12f * Mathf.Clamp01((y - 118) / 6f));
+                return new Color(v, v, v, a);
+            }));
+        }
+
+        static Sprite MakePanel()
+        {
+            var sdf = Raster.RoundRectSdf(0, 0, 96, 96, 28);
+            var r = new Raster(96, 96);
+            r.Shade((x, y) => { float d = sdf(x, y); if (d > .5f) return new Color(0, 0, 0, 0); float v = .9f + .1f * (y / 96f); return new Color(v, v, v, Mathf.Clamp01(.5f - d)); });
+            return r.ToSprite(PPU, null, 32);
+        }
+
+        static Sprite MakeShadow()
+        {
+            var sdf = Raster.RoundRectSdf(24, 24, 80, 80, 28);
+            var r = new Raster(128, 128);
+            r.Shade((x, y) => { float d = sdf(x, y); float a = d <= 0 ? 1 : Mathf.Pow(Mathf.Clamp01(1 - d / 24f), 2); return new Color(0, 0, 0, a); });
+            return r.ToSprite(PPU, null, 48);
+        }
+
+        static Sprite MakeGlow()
+        {
+            return Make(128, 128, r => r.Shade((x, y) => { float d = Mathf.Sqrt((x - 64) * (x - 64) + (y - 64) * (y - 64)) / 64f; if (d > 1) return new Color(0, 0, 0, 0); float a = Mathf.Pow(1 - d, 2); return new Color(1, 1, 1, a); }));
+        }
+
+        static Sprite MakeBackdrop()
+        {
+            return Make(128, 128, r => r.Shade((x, y) =>
+            {
+                float dx = (x - 64) / 64f, dy = (y - 92) / 80f; float d = Mathf.Clamp01(Mathf.Sqrt(dx * dx + dy * dy));
+                return Color.Lerp(Palette.Hex("#45308f"), Palette.Hex("#16103a"), Mathf.SmoothStep(0, 1, d));
+            }));
         }
 
         static Sprite MakeRainbow()

@@ -66,8 +66,8 @@ namespace LastMatch.View
 
         public static Button MakeButton(Transform parent, string text, Color bg, Color fg, int size, Action onClick, float w, float h, string name = "Button")
         {
-            var img = Panel(parent, bg, name, SpriteFactory.Square);
-            img.type = Image.Type.Sliced;
+            var img = Panel(parent, bg, name, SpriteFactory.Panel9);
+            img.type = Image.Type.Sliced; img.pixelsPerUnitMultiplier = 3f;
             var b = img.gameObject.AddComponent<Button>();
             var colors = b.colors; colors.highlightedColor = new Color(1, 1, 1, .9f); colors.pressedColor = new Color(.8f, .8f, .8f, 1); colors.disabledColor = new Color(1, 1, 1, .35f); b.colors = colors;
             b.onClick.AddListener(() => onClick?.Invoke());
