@@ -8,21 +8,21 @@ beyond two Google Fonts.
 
 ## Campaign
 
-250 generated levels in ten tiers of 25. Each tier adds one mechanic and keeps
-everything before it. Progress and best scores are saved in the browser.
+250 generated levels in ten tiers. Each tier starts at a set level (see the
+`from` field in `TIERS`), adds one mechanic and keeps everything before it. Progress and best scores are saved in the browser.
 
 | Levels | Tier | New mechanic |
 | --- | --- | --- |
-| 1–25 | Basics | Plain matches only. Three in a row clears, nothing more. |
-| 26–50 | Blasters | Four in a row makes a row or column blaster. |
-| 51–75 | Bombs & Holes | L or T shapes make a 3x3 bomb. Boards get holes. |
-| 76–100 | Color Bombs | Five in a row makes a color bomb. Caged gems: matchable, not movable. |
-| 101–125 | Fog & Combos | Fogged gems hide their color. Six makes a cross. Swapping two specials combos. |
-| 126–150 | Diagonals | Diagonal blasters spawn from the supply. Locks open on a timer. |
-| 151–175 | Seekers | Seekers spawn and blast wherever you stand when they go off. |
-| 176–200 | Closing Cages | Cages close on random gems during play. Bigger boards. |
-| 201–225 | Shapeshift | Your color changes every 15 seconds, with a countdown. |
-| 226–250 | Rush Hour | Every 20 seconds the AI doubles its pace for five. |
+| 1–9 | Basics | Plain matches only. Three in a row clears, nothing more. |
+| 10–24 | Blasters | Four in a row makes a row or column blaster. |
+| 25–49 | Bombs & Holes | L or T shapes make a 3x3 bomb. Boards get holes. |
+| 50–79 | Color Bombs | Five in a row makes a color bomb. Caged gems: matchable, not movable. |
+| 80–109 | Fog & Combos | Fogged gems hide their color. Six makes a cross. Swapping two specials combos. |
+| 110–139 | Diagonals | Diagonal blasters spawn from the supply. Locks open on a timer. |
+| 140–169 | Seekers | Seekers spawn and blast wherever you stand when they go off. |
+| 170–199 | Closing Cages | Cages close on random gems during play. Bigger boards. |
+| 200–229 | Shapeshift | Your color changes every 15 seconds, with a countdown. |
+| 230–250 | Rush Hour | Every 20 seconds the AI doubles its pace for five. |
 
 Endless mode has infinite gems and moves, every mechanic, and a best score.
 
