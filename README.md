@@ -6,6 +6,12 @@ match you off the board. Survive until it runs out of moves.
 Open `last-match.html` in a browser to play. No build step, no dependencies
 beyond two Google Fonts.
 
+Two builds share the same design:
+
+- `last-match.html`: the web prototype, one file, open it in a browser.
+- `unity/`: the native Unity 6 port for Android and iOS. See `unity/README.md`
+  for opening, testing and building it.
+
 ## Campaign
 
 250 generated levels in ten tiers. Each tier starts at a set level (see the
