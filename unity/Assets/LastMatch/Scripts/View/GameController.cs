@@ -34,6 +34,8 @@ namespace LastMatch.View
         int menuTier; int currentLevel = 1;   // 0 = endless
         float lastAspect = -1; int lastCols, lastRows;
         Vector2 ptrDown; bool ptrActive; float pendingEnd = -1; bool pendingWin, pendingNewBest; string lastHud = "";
+        // screenshot mode: -lmshot <path> [-lmlevel n] starts a level and captures the frame when the AI is about to match the player
+        string shotPath; bool shotArmed; int shotFrames; float shotWait;
 
         /// <summary>Hooks for automated tests.</summary>
         public GameSim Sim => sim;
@@ -46,6 +48,7 @@ namespace LastMatch.View
         void Awake()
         {
             Application.targetFrameRate = 60;
+            Application.runInBackground = true;
             Input.simulateMouseWithTouches = true;
             SpriteFactory.Build();
             cam = Camera.main;
@@ -63,11 +66,19 @@ namespace LastMatch.View
             sim.StartLevel(LevelGen.Make(currentLevel)); sim.Stop();
             RebuildCells();
             ShowMenu();
+            var args = Environment.GetCommandLineArgs();
+            for (int i = 0; i < args.Length - 1; i++) if (args[i] == "-lmshot") shotPath = args[i + 1];
+            if (!string.IsNullOrEmpty(shotPath))
+            {
+                int lvl = 30; for (int i = 0; i < args.Length - 1; i++) if (args[i] == "-lmlevel") int.TryParse(args[i + 1], out lvl);
+                sim.T.AggroStart = 1f; sim.T.AggroEnd = 1f;
+                StartLevel(lvl); shotArmed = true; Debug.Log("Last Match shot mode: level " + lvl + " -> " + shotPath);
+            }
         }
 
         void BuildWorld()
         {
-            boardRoot = new GameObject("Board").transform; boardRoot.position = new Vector3(0, -.3f, 0);
+            boardRoot = new GameObject("Board").transform; boardRoot.position = new Vector3(0, .25f, 0);
             cellRoot = new GameObject("Cells").transform; cellRoot.SetParent(boardRoot, false);
             gemRoot = new GameObject("Gems").transform; gemRoot.SetParent(boardRoot, false);
             fxRoot = new GameObject("Fx").transform; fxRoot.SetParent(boardRoot, false);
@@ -103,9 +114,9 @@ namespace LastMatch.View
 
             var dock = UiKit.Panel(canvas.transform, new Color(0, 0, 0, 0), "Dock"); UiKit.AnchorBottom(dock.rectTransform, 110, 12, 12, 10); dock.raycastTarget = false;
             var dh = UiKit.HStack(dock.transform, 10, TextAnchor.MiddleCenter); UiKit.Stretch(dh.GetComponent<RectTransform>());
-            var mv = UiKit.VStack(dh.transform, 4, TextAnchor.MiddleLeft); var mle = mv.gameObject.AddComponent<LayoutElement>(); mle.flexibleWidth = 1; mle.preferredHeight = 60;
-            var ml = UiKit.Label(mv.transform, "SURVIVAL METER · EARNS A POWER-UP", 11, Palette.Muted, TextAnchor.MiddleLeft); UiKit.Size(ml, 0, 16);
-            var bar = UiKit.Panel(mv.transform, Palette.Hex("#140e33"), "MeterBg", SpriteFactory.Square); UiKit.Size(bar, 0, 18); var ble = bar.GetComponent<LayoutElement>(); ble.flexibleWidth = 1;
+            var mv = UiKit.VStack(dh.transform, 4, TextAnchor.MiddleLeft); var mle = mv.gameObject.AddComponent<LayoutElement>(); mle.flexibleWidth = 1; mle.minWidth = 200; mle.preferredWidth = 240; mle.preferredHeight = 60;
+            var ml = UiKit.Label(mv.transform, "SURVIVAL METER · EARNS A POWER-UP", 11, Palette.Muted, TextAnchor.MiddleLeft); UiKit.Size(ml, 240, 16); ml.horizontalOverflow = HorizontalWrapMode.Overflow;
+            var bar = UiKit.Panel(mv.transform, Palette.Hex("#140e33"), "MeterBg", SpriteFactory.Square); UiKit.Size(bar, 240, 18); var ble = bar.GetComponent<LayoutElement>(); ble.flexibleWidth = 1;
             meterFill = UiKit.Panel(bar.transform, Palette.Gold, "MeterFill", SpriteFactory.Square); meterFill.type = Image.Type.Filled; meterFill.fillMethod = Image.FillMethod.Horizontal; meterFill.fillAmount = 0; UiKit.Stretch(meterFill.rectTransform, 2, 2, 2, 2);
             for (int i = 0; i < 3; i++)
             {
@@ -172,6 +183,20 @@ namespace LastMatch.View
             SyncBoard();
             SyncFx(dt);
             SyncHud();
+            if (shotArmed) ShotStep(dt);
+        }
+
+        void ShotStep(float dt)
+        {
+            shotWait += dt;
+            bool lethalTele = sim.Running && sim.AiStateNow == AiState.Tele && sim.AiPreview != null && sim.AiPreview.Lethal && sim.FingerVis > .9f && sim.Shield <= 0 && !sim.Busy;
+            if (lethalTele || shotWait > 150f)
+            {
+                sim.AiTele = 999f;   // hold the telegraph so the frame is stable
+                shotFrames++;
+                if (shotFrames == 4) { ScreenCapture.CaptureScreenshot(shotPath); Debug.Log("Last Match shot: " + shotPath + (lethalTele ? " (lethal telegraph)" : " (timeout fallback)")); }
+                if (shotFrames == 20) Application.Quit();
+            }
         }
 
         void HandleInput()
@@ -269,7 +294,7 @@ namespace LastMatch.View
             float t = Time.time;
             float pulse = .5f + .5f * Mathf.Sin(t * 9);
             var B = sim.B;
-            boardRoot.position = new Vector3(0, -.3f, 0) + (sim.Shake > 0 ? new Vector3((UnityEngine.Random.value - .5f) * sim.Shake * .2f, (UnityEngine.Random.value - .5f) * sim.Shake * .2f, 0) : Vector3.zero);
+            boardRoot.position = new Vector3(0, .25f, 0) + (sim.Shake > 0 ? new Vector3((UnityEngine.Random.value - .5f) * sim.Shake * .2f, (UnityEngine.Random.value - .5f) * sim.Shake * .2f, 0) : Vector3.zero);
 
             // locked cells may have opened since the cells were built
             int ci = 0;

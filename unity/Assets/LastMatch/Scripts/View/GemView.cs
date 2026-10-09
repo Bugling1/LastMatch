@@ -37,7 +37,7 @@ namespace LastMatch.View
             outline = Add("Outline", SpriteFactory.Shapes[0], 10, 1.13f, Vector2.zero, Palette.Ink);
             body = Add("Body", SpriteFactory.Shapes[0], 11, 1f, Vector2.zero);
             rainbow = Add("Rainbow", SpriteFactory.Rainbow, 11, 1f, Vector2.zero);
-            highlight = Add("Highlight", SpriteFactory.Highlight, 12, .34f, new Vector2(-.14f, .16f), new Color(1, 1, 1, .55f));
+            highlight = Add("Highlight", SpriteFactory.Highlight, 12, .3f, new Vector2(-.14f, .16f), new Color(1, 1, 1, .55f)); highlight.transform.localRotation = Quaternion.Euler(0, 0, 35);
             ring = Add("Ring", SpriteFactory.Ring, 12, .95f, Vector2.zero, new Color(1, 1, 1, .6f));
             badge = Add("Badge", null, 13, 1f, Vector2.zero);
             eyeL = Add("EyeL", SpriteFactory.EyeWhite, 14, .32f, new Vector2(-ex, ey));
