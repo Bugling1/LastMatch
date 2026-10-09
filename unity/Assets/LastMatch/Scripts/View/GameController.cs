@@ -28,8 +28,11 @@ namespace LastMatch.View
         float flashAlpha; Color flashColor = Color.white;
 
         // UI
-        Text lvlName, scoreT, timeT, supplyT, movesT, dodgesT, chipsT; Image meterFill, flashImg, tintImg;
-        readonly Button[] slotBtns = new Button[3]; readonly Text[] slotTxt = new Text[3];
+        Text lvlName, scoreT, timeT, supplyT, movesT, dodgesT, chipsT, meterPct; Image meterFill, flashImg, tintImg;
+        class Slot { public Button Btn; public Image Bg, Icon; public Text Name, Hint; }
+        readonly Slot[] slots = new Slot[3];
+        Image topPanel, dockPanel; HorizontalLayoutGroup slotRow, statsRow; readonly List<Text> statValues = new List<Text>(); readonly List<Text> statLabels = new List<Text>();
+        float boardBaseY = .25f; int lastScreenH;
         RectTransform overlayRoot; Image overlayBg; bool overlayShown; string overlayKind; Action overlayPrimary;
         int menuTier; int currentLevel = 1;   // 0 = endless
         float lastAspect = -1; int lastCols, lastRows;
@@ -72,7 +75,8 @@ namespace LastMatch.View
             {
                 int lvl = 30; for (int i = 0; i < args.Length - 1; i++) if (args[i] == "-lmlevel") int.TryParse(args[i + 1], out lvl);
                 sim.T.AggroStart = 1f; sim.T.AggroEnd = 1f;
-                StartLevel(lvl); shotArmed = true; Debug.Log("Last Match shot mode: level " + lvl + " -> " + shotPath);
+                StartLevel(lvl); shotArmed = true;
+                sim.Slots.Add(PowerupType.Shield); sim.Slots.Add(PowerupType.Glitch); RefreshSlots(); Debug.Log("Last Match shot mode: level " + lvl + " -> " + shotPath);
             }
         }
 
@@ -107,28 +111,25 @@ namespace LastMatch.View
             tintImg = UiKit.Panel(canvas.transform, new Color(0, 0, 0, 0), "Tint"); UiKit.Stretch(tintImg.rectTransform); tintImg.raycastTarget = false;
             flashImg = UiKit.Panel(canvas.transform, new Color(1, 1, 1, 0), "Flash"); UiKit.Stretch(flashImg.rectTransform); flashImg.raycastTarget = false;
 
-            var top = UiKit.Panel(canvas.transform, new Color(.08f, .055f, .22f, .78f), "Top", SpriteFactory.Panel9); top.pixelsPerUnitMultiplier = 2.5f; UiKit.AnchorTop(top.rectTransform, 120, 10, 10, 8); top.raycastTarget = false;
-            var tv = UiKit.VStack(top.transform, 2, TextAnchor.UpperLeft); UiKit.Stretch(tv.GetComponent<RectTransform>(), 12, 12, 6, 4);
+            var top = UiKit.Panel(canvas.transform, new Color(.08f, .055f, .22f, .78f), "Top", SpriteFactory.Panel9); top.pixelsPerUnitMultiplier = 2.5f; UiKit.AnchorTop(top.rectTransform, 120, 10, 10, 8); top.raycastTarget = false; topPanel = top;
+            var tv = UiKit.VStack(top.transform, 4, TextAnchor.MiddleLeft); UiKit.Stretch(tv.GetComponent<RectTransform>(), 12, 12, 6, 4);
             var titleRow = UiKit.HStack(tv.transform, 10, TextAnchor.MiddleLeft);
-            var brand = UiKit.Label(titleRow.transform, "LAST MATCH", 26, Palette.Gold, TextAnchor.MiddleLeft); UiKit.Size(brand, 180, 30);
+            var brand = UiKit.Label(titleRow.transform, "LAST MATCH", 26, Palette.Gold, TextAnchor.MiddleLeft); UiKit.Size(brand, 180, 30); brand.horizontalOverflow = HorizontalWrapMode.Overflow; brand.GetComponent<LayoutElement>().minWidth = 180;
             var bs = brand.gameObject.AddComponent<Shadow>(); bs.effectColor = Palette.Hex("#7a2a55"); bs.effectDistance = new Vector2(0, -2.5f);
             lvlName = UiKit.Label(titleRow.transform, "", 13, Palette.Muted, TextAnchor.MiddleLeft); UiKit.Size(lvlName, 300, 30);
-            var stats = UiKit.HStack(tv.transform, 6, TextAnchor.MiddleLeft);
+            var stats = UiKit.HStack(tv.transform, 6, TextAnchor.MiddleCenter); stats.childForceExpandWidth = true; statsRow = stats; var sle = stats.gameObject.AddComponent<LayoutElement>(); sle.preferredWidth = 500; sle.flexibleWidth = 1;
             scoreT = StatBlock(stats.transform, "SCORE"); timeT = StatBlock(stats.transform, "SURVIVED"); supplyT = StatBlock(stats.transform, "GEM SUPPLY"); movesT = StatBlock(stats.transform, "AI MOVES LEFT"); dodgesT = StatBlock(stats.transform, "DODGED");
             chipsT = UiKit.Label(tv.transform, "", 13, Palette.Gold, TextAnchor.MiddleLeft); UiKit.Size(chipsT, 500, 22);
 
-            var dock = UiKit.Panel(canvas.transform, new Color(.08f, .055f, .22f, .78f), "Dock", SpriteFactory.Panel9); dock.pixelsPerUnitMultiplier = 2.5f; UiKit.AnchorBottom(dock.rectTransform, 110, 10, 10, 10); dock.raycastTarget = false;
-            var dh = UiKit.HStack(dock.transform, 10, TextAnchor.MiddleCenter); UiKit.Stretch(dh.GetComponent<RectTransform>(), 12, 12, 8, 8);
-            var mv = UiKit.VStack(dh.transform, 4, TextAnchor.MiddleLeft); var mle = mv.gameObject.AddComponent<LayoutElement>(); mle.flexibleWidth = 1; mle.minWidth = 200; mle.preferredWidth = 240; mle.preferredHeight = 60;
-            var ml = UiKit.Label(mv.transform, "SURVIVAL METER · EARNS A POWER-UP", 11, Palette.Muted, TextAnchor.MiddleLeft); UiKit.Size(ml, 240, 16); ml.horizontalOverflow = HorizontalWrapMode.Overflow;
-            var bar = UiKit.Panel(mv.transform, Palette.Hex("#140e33"), "MeterBg", SpriteFactory.Square); UiKit.Size(bar, 240, 18); var ble = bar.GetComponent<LayoutElement>(); ble.flexibleWidth = 1;
-            meterFill = UiKit.Panel(bar.transform, Palette.Gold, "MeterFill", SpriteFactory.Square); meterFill.type = Image.Type.Filled; meterFill.fillMethod = Image.FillMethod.Horizontal; meterFill.fillAmount = 0; UiKit.Stretch(meterFill.rectTransform, 2, 2, 2, 2);
-            for (int i = 0; i < 3; i++)
-            {
-                int idx = i;
-                slotBtns[i] = UiKit.MakeButton(dh.transform, "", Palette.PanelDark, Palette.Cream, 13, () => sim.UsePowerup(idx), 86, 64, "Slot" + i);
-                slotTxt[i] = slotBtns[i].GetComponentInChildren<Text>();
-            }
+            var dock = UiKit.Panel(canvas.transform, new Color(.08f, .055f, .22f, .82f), "Dock", SpriteFactory.Panel9); dock.pixelsPerUnitMultiplier = 2.5f; UiKit.AnchorBottom(dock.rectTransform, 198, 10, 10, 10); dock.raycastTarget = false; dockPanel = dock;
+            var dv = UiKit.VStack(dock.transform, 8, TextAnchor.UpperCenter); UiKit.Stretch(dv.GetComponent<RectTransform>(), 14, 14, 12, 12);
+            var mrow = UiKit.HStack(dv.transform, 8, TextAnchor.MiddleLeft); UiKit.Size(mrow, 492, 20);
+            var ml = UiKit.Label(mrow.transform, "SURVIVE TO EARN A POWER-UP", 12, Palette.Muted, TextAnchor.MiddleLeft); UiKit.Size(ml, 330, 20); ml.horizontalOverflow = HorizontalWrapMode.Overflow;
+            meterPct = UiKit.Label(mrow.transform, "0%", 12, Palette.Gold, TextAnchor.MiddleRight); UiKit.Size(meterPct, 150, 20);
+            var bar = UiKit.Panel(dv.transform, Palette.Hex("#3a2f7a"), "MeterBg", SpriteFactory.Panel9); bar.pixelsPerUnitMultiplier = 4f; UiKit.Size(bar, 492, 22);
+            meterFill = UiKit.Panel(bar.transform, Palette.Gold, "MeterFill", SpriteFactory.Square); meterFill.type = Image.Type.Filled; meterFill.fillMethod = Image.FillMethod.Horizontal; meterFill.fillAmount = 0; UiKit.Stretch(meterFill.rectTransform, 3, 3, 3, 3);
+            var srow = UiKit.HStack(dv.transform, 10, TextAnchor.MiddleCenter); UiKit.Size(srow, 492, 112); srow.childForceExpandWidth = true; slotRow = srow;
+            for (int i = 0; i < 3; i++) BuildSlot(srow.transform, i);
 
             var oc = UiKit.MakeCanvas("Overlay", 20);
             overlayBg = UiKit.Panel(oc.transform, new Color(.07f, .043f, .19f, .93f), "OverlayBg"); UiKit.Stretch(overlayBg.rectTransform);
@@ -136,12 +137,25 @@ namespace LastMatch.View
             RefreshSlots();
         }
 
+        void BuildSlot(Transform parent, int i)
+        {
+            var bg = UiKit.Panel(parent, Palette.PanelDark, "Slot" + i, SpriteFactory.Panel9); bg.pixelsPerUnitMultiplier = 3f; UiKit.Size(bg, 154, 112);
+            var btn = bg.gameObject.AddComponent<Button>(); btn.onClick.AddListener(() => sim.UsePowerup(i));
+            var colors = btn.colors; colors.pressedColor = new Color(.8f, .8f, .8f, 1); colors.disabledColor = Color.white; btn.colors = colors;
+            var v = UiKit.VStack(bg.transform, 2, TextAnchor.MiddleCenter); UiKit.Stretch(v.GetComponent<RectTransform>(), 4, 4, 6, 4);
+            var icon = UiKit.Panel(v.transform, Palette.Gold, "Icon", null); icon.type = Image.Type.Simple; icon.preserveAspect = true; UiKit.Size(icon, 46, 46); icon.raycastTarget = false;
+            var name = UiKit.Label(v.transform, "EMPTY", 15, Palette.Muted); UiKit.Size(name, 146, 20);
+            var hint = UiKit.Label(v.transform, "SLOT " + (i + 1), 9, Palette.Muted, TextAnchor.MiddleCenter, FontStyle.Normal); UiKit.Size(hint, 146, 26);
+            slots[i] = new Slot { Btn = btn, Bg = bg, Icon = icon, Name = name, Hint = hint };
+        }
+
         Text StatBlock(Transform parent, string label)
         {
-            var v = UiKit.VStack(parent, 0, TextAnchor.MiddleCenter); UiKit.Size(v, 96, 46);
+            var v = UiKit.VStack(parent, 0, TextAnchor.MiddleCenter); UiKit.Size(v, 90, 46); var vle = v.GetComponent<LayoutElement>(); vle.flexibleWidth = 1;
             var val = UiKit.Label(v.transform, "0", 22, Palette.Cream); UiKit.Size(val, 96, 26);
             var vs = val.gameObject.AddComponent<Shadow>(); vs.effectColor = new Color(0, 0, 0, .5f); vs.effectDistance = new Vector2(0, -1.5f);
             var lbl = UiKit.Label(v.transform, label, 9, Palette.Muted); UiKit.Size(lbl, 96, 14);
+            statValues.Add(val); statLabels.Add(lbl);
             return val;
         }
 
@@ -251,18 +265,61 @@ namespace LastMatch.View
 
         // ============================================================
         // board drawing
+        /// <summary>Fits the board to the screen width, then hands any spare vertical room to the HUD and the power-up dock and centres the board in what is left.</summary>
         void Layout()
         {
             float aspect = (float)Screen.width / Mathf.Max(1, Screen.height);
-            if (Mathf.Abs(aspect - lastAspect) < 1e-4f && lastCols == sim.B.Cols && lastRows == sim.B.Rows) return;
-            lastAspect = aspect; lastCols = sim.B.Cols; lastRows = sim.B.Rows;
-            cam.orthographicSize = Mathf.Max((sim.B.Cols + 1f) / (2f * aspect), sim.B.Rows / 2f + 2.9f);
+            if (Mathf.Abs(aspect - lastAspect) < 1e-4f && lastCols == sim.B.Cols && lastRows == sim.B.Rows && lastScreenH == Screen.height) return;
+            lastAspect = aspect; lastCols = sim.B.Cols; lastRows = sim.B.Rows; lastScreenH = Screen.height;
+            float cols = sim.B.Cols, rows = sim.B.Rows, H = Mathf.Max(1, Screen.height);
+            float sf = Mathf.Sqrt((Screen.width / 540f) * (H / 960f));        // what the CanvasScaler (match 0.5) resolves to
+            float hudU = 120f, dockU = 198f, ortho = 1f, worldPerPx = 1f, hudPx = 0, dockPx = 0;
+            for (int pass = 0; pass < 2; pass++)
+            {
+                hudPx = (hudU + 8f) * sf; dockPx = (dockU + 10f) * sf;
+                float frac = Mathf.Min(.8f, (hudPx + dockPx) / H);
+                ortho = Mathf.Max((cols + .7f) / (2f * aspect), (rows + .7f) / (2f * (1f - frac)));
+                worldPerPx = 2f * ortho / H;
+                float free = 2f * ortho - (hudPx + dockPx) * worldPerPx - (rows + .7f);
+                if (pass == 0 && free > .2f)
+                {
+                    float freeU = free / worldPerPx / sf;
+                    dockU = Mathf.Min(400f, dockU + freeU * .62f);
+                    hudU = Mathf.Min(150f, hudU + freeU * .18f);
+                }
+            }
+            cam.orthographicSize = ortho;
             cam.transform.position = new Vector3(0, 0, -5);
-            float h = cam.orthographicSize * 2f, w = h * aspect;
+            float topY = ortho - hudPx * worldPerPx, bottomY = -ortho + dockPx * worldPerPx;
+            boardBaseY = (topY + bottomY) / 2f;
+            ApplyHudSizes(hudU, dockU);
+            float h = ortho * 2f, w = h * aspect;
             backdrop.transform.localScale = new Vector3(w + .2f, h + .2f, 1);
             boardPanel.size = new Vector2(sim.B.Cols + .5f, sim.B.Rows + .5f);
             boardShadow.size = new Vector2(sim.B.Cols + 1.3f, sim.B.Rows + 1.3f);
             boardShadow.transform.localPosition = new Vector3(0, -.12f, 0);
+        }
+
+        void ApplyHudSizes(float hudU, float dockU)
+        {
+            UiKit.AnchorTop(topPanel.rectTransform, hudU, 10, 10, 8);
+            UiKit.AnchorBottom(dockPanel.rectTransform, dockU, 10, 10, 10);
+            float t = Mathf.Clamp01((hudU - 120f) / 55f);
+            int valSize = Mathf.RoundToInt(Mathf.Lerp(22, 30, t)), lblSize = Mathf.RoundToInt(Mathf.Lerp(9, 11, t));
+            foreach (var v in statValues) { v.fontSize = valSize; UiKit.Size(v, 96, valSize + 6); }
+            foreach (var l in statLabels) { l.fontSize = lblSize; UiKit.Size(l, 96, lblSize + 6); }
+            float cardH = Mathf.Clamp(dockU - 86f, 112f, 300f);
+            UiKit.Size(slotRow, 492, cardH);
+            float iconSize = Mathf.Clamp(cardH * .42f, 46f, 110f);
+            int nameSize = cardH > 220 ? 20 : cardH > 150 ? 18 : 15, hintSize = cardH > 220 ? 12 : cardH > 150 ? 11 : 9;
+            foreach (var s in slots)
+            {
+                if (s == null) continue;
+                UiKit.Size(s.Bg, 154, cardH);
+                UiKit.Size(s.Icon, iconSize, iconSize);
+                s.Name.fontSize = nameSize; UiKit.Size(s.Name, 146, nameSize + 6);
+                s.Hint.fontSize = hintSize; UiKit.Size(s.Hint, 146, hintSize * 3);
+            }
         }
 
         Vector3 CellPos(float r, float c) => new Vector3(c - sim.B.Cols / 2f + .5f, -(r - sim.B.Rows / 2f + .5f), 0);
@@ -305,7 +362,7 @@ namespace LastMatch.View
             float t = Time.time;
             float pulse = .5f + .5f * Mathf.Sin(t * 9);
             var B = sim.B;
-            boardRoot.position = new Vector3(0, .25f, 0) + (sim.Shake > 0 ? new Vector3((UnityEngine.Random.value - .5f) * sim.Shake * .2f, (UnityEngine.Random.value - .5f) * sim.Shake * .2f, 0) : Vector3.zero);
+            boardRoot.position = new Vector3(0, boardBaseY, 0) + (sim.Shake > 0 ? new Vector3((UnityEngine.Random.value - .5f) * sim.Shake * .2f, (UnityEngine.Random.value - .5f) * sim.Shake * .2f, 0) : Vector3.zero);
 
             // locked cells may have opened since the cells were built
             int ci = 0;
@@ -535,7 +592,7 @@ namespace LastMatch.View
             timeT.text = FmtTime(sim.Time); scoreT.text = ((int)sim.Score).ToString(); dodgesT.text = sim.Dodges.ToString();
             supplyT.text = FmtNum(sim.Supply); movesT.text = FmtNum(sim.AiLeft);
             supplyT.color = sim.Supply == 0 ? Palette.Danger : Palette.Cream; movesT.color = sim.AiLeft <= 5 ? Palette.Danger : Palette.Cream;
-            meterFill.fillAmount = sim.Meter;
+            meterFill.fillAmount = sim.Meter; meterPct.text = sim.Slots.Count >= sim.T.MaxSlots ? "SLOTS FULL" : (int)(sim.Meter * 100) + "%";
             var chips = new List<string>();
             if (sim.Shield > 0) chips.Add("SHIELD " + Mathf.CeilToInt(sim.Shield) + "s");
             if (sim.Glitch > 0) chips.Add("GLITCH " + Mathf.CeilToInt(sim.Glitch) + "s");
@@ -552,11 +609,24 @@ namespace LastMatch.View
         {
             for (int i = 0; i < 3; i++)
             {
+                var s = slots[i]; if (s == null) continue;
                 bool filled = i < sim.Slots.Count;
-                slotTxt[i].text = filled ? SpecialInfo.PowerupName(sim.Slots[i]).ToUpperInvariant() + "\n<size=10>" + (i + 1) + "</size>" : "<size=10>" + (i + 1) + "</size>";
-                slotTxt[i].supportRichText = true;
-                slotBtns[i].image.color = filled ? Palette.Panel : Palette.PanelDark;
-                slotTxt[i].color = filled ? Palette.Gold : Palette.Muted;
+                if (filled)
+                {
+                    var t = sim.Slots[i];
+                    s.Icon.enabled = true; s.Icon.sprite = SpriteFactory.PowerupIcons[t]; s.Icon.color = Palette.Gold;
+                    s.Name.text = SpecialInfo.PowerupName(t).ToUpperInvariant(); s.Name.color = Palette.Cream;
+                    s.Hint.text = SpecialInfo.PowerupDesc(t) + "\nTap or press " + (i + 1); s.Hint.color = Palette.Muted;
+                    s.Bg.color = Palette.Panel;
+                }
+                else
+                {
+                    s.Icon.enabled = false;
+                    s.Name.text = "EMPTY"; s.Name.color = new Color(.73f, .68f, .87f, .5f);
+                    s.Hint.text = "SLOT " + (i + 1); s.Hint.color = new Color(.73f, .68f, .87f, .5f);
+                    s.Bg.color = new Color(.1f, .07f, .25f, .7f);
+                }
+                s.Btn.interactable = filled;
             }
         }
 

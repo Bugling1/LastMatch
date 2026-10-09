@@ -132,6 +132,7 @@ namespace LastMatch.View
         public static Sprite Panel9, Shadow9, Glow, Backdrop;
         public static Sprite Highlight, EyeWhite, Pupil, Smile, MouthO, XMark, Glasses, Brow, Dot, Ring, Beam, Cell, Hand, Arrow, Cage, FogTile, Rainbow, Square;
         public static Dictionary<Special, Sprite> Badges = new Dictionary<Special, Sprite>();
+        public static Dictionary<PowerupType, Sprite> PowerupIcons = new Dictionary<PowerupType, Sprite>();
         static bool built;
 
         public static void Build()
@@ -161,6 +162,42 @@ namespace LastMatch.View
             FogTile = Make(128, 128, r => { r.RoundRect(10, 10, 108, 108, 26, Palette.Ink); r.RoundRect(14, 14, 100, 100, 24, Palette.Hex("#4d4480")); r.Circle(44, 60, 22, new Color(1, 1, 1, .08f)); r.Circle(80, 70, 20, new Color(1, 1, 1, .08f)); });
             Rainbow = MakeRainbow();
             foreach (Special sp in Enum.GetValues(typeof(Special))) if (sp != Special.None && sp != Special.Rainbow) Badges[sp] = MakeBadge(sp);
+            PowerupIcons[PowerupType.Shield] = Make(64, 64, r =>
+            {
+                r.Poly(new[] { new Vector2(32, 3), new Vector2(7, 14), new Vector2(7, 36), new Vector2(32, 61), new Vector2(57, 36), new Vector2(57, 14) }, Color.white);
+                r.Poly(new[] { new Vector2(32, 11), new Vector2(14, 19), new Vector2(14, 34), new Vector2(32, 52), new Vector2(50, 34), new Vector2(50, 19) }, new Color(0, 0, 0, .35f));
+                r.Capsule(22, 32, 29, 25, 5, Color.white); r.Capsule(29, 25, 43, 41, 5, Color.white);
+            });
+            PowerupIcons[PowerupType.Glitch] = Make(64, 64, r =>
+            {
+                r.Poly(new[] { new Vector2(38, 62), new Vector2(12, 30), new Vector2(29, 30), new Vector2(24, 2), new Vector2(52, 36), new Vector2(35, 36), new Vector2(40, 62) }, Color.white);
+            });
+            PowerupIcons[PowerupType.Freeze] = Make(64, 64, r =>
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    float a = i * Mathf.PI / 3; float dx = Mathf.Cos(a) * 27, dy = Mathf.Sin(a) * 27;
+                    r.Capsule(32 - dx, 32 - dy, 32 + dx, 32 + dy, 5, Color.white);
+                    foreach (int s in new[] { -1, 1 })
+                    {
+                        float bx = 32 + dx * .62f, by = 32 + dy * .62f, ba = a + s * Mathf.PI / 4;
+                        r.Capsule(bx, by, bx + Mathf.Cos(ba) * 8, by + Mathf.Sin(ba) * 8, 4, Color.white);
+                        bx = 32 - dx * .62f; by = 32 - dy * .62f; ba = a + Mathf.PI + s * Mathf.PI / 4;
+                        r.Capsule(bx, by, bx + Mathf.Cos(ba) * 8, by + Mathf.Sin(ba) * 8, 4, Color.white);
+                    }
+                }
+            });
+            PowerupIcons[PowerupType.Shuffle] = Make(64, 64, r =>
+            {
+                void ArrowAt(float y0, float y1, bool rightwards)
+                {
+                    float x0 = rightwards ? 6 : 58, x1 = rightwards ? 58 : 6;
+                    r.Capsule(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2, 5, Color.white); r.Capsule((x0 + x1) / 2, (y0 + y1) / 2, x1 - (rightwards ? 6 : -6), y1, 5, Color.white);
+                    float hx = x1, hy = y1; float dir = rightwards ? 1 : -1;
+                    r.Poly(new[] { new Vector2(hx + dir * 2, hy), new Vector2(hx - dir * 11, hy - 8), new Vector2(hx - dir * 11, hy + 8) }, Color.white);
+                }
+                ArrowAt(46, 18, true); ArrowAt(18, 46, true);
+            });
         }
 
         static Sprite Make(int w, int h, Action<Raster> draw, Vector2? pivot = null)

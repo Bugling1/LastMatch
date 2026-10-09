@@ -106,8 +106,7 @@ namespace LastMatch.View
         public static LayoutElement Size(Component c, float w, float h)
         {
             var le = c.gameObject.GetComponent<LayoutElement>() ?? c.gameObject.AddComponent<LayoutElement>();
-            le.preferredWidth = w; le.preferredHeight = h; le.minHeight = h;
-            if (w > 0) le.minWidth = w;
+            le.preferredWidth = w; le.preferredHeight = h; le.minHeight = h; le.minWidth = -1;
             return le;
         }
 
